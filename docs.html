@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Tealium UDO &amp; Adobe Analytics - Documentation</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css" />
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
+
+    <!--[if IE]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <style>
+        body {
+            position: relative;
+        }
+        pre {
+            font-family: "Courier 10 Pitch", Courier, monospace;
+            font-size: 95%;
+            line-height: 140%;
+            white-space: pre;
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -o-pre-wrap;
+        }
+
+        code {
+            font-family: Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
+            font-size: 95%;
+            line-height: 140%;
+            background: #faf8f0;
+            display: block;
+            color: #4b4949 !important;
+        }
+
+        .notes {
+            display: block;
+            padding: 9.5px;
+            margin: 0 0 10px;
+            font-family: "Courier 10 Pitch", Courier, monospace;
+            font-size: 95%;
+            line-height: 140%;
+            color: #333;
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #content code {
+            display: block;
+            padding: 0.5em 1em;
+            border: 1px solid #bebab0;
+        }
+
+        .table {
+            border: 1px solid #bebab0;
+        }
+
+        #sidebar {
+            background-color: #ddd;
+            height: 100%;
+            overflow: scroll;
+        }
+
+        #sidebar-nav {
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 0px 0px 10px 10px;
+        }
+
+        #sidebar-nav li {
+            border-bottom: 1px solid #ddd;
+        }
+
+        #sidebar-nav li:last-child {
+            border-bottom: none;
+        }
+
+        #screen-gap {
+            display: block;
+        }
+    </style>
+    <script>
+        $(function () {
+            $('#screen-gap').height($(window).height());
+
+            // Setup - add a text input to each footer cell
+            $('.table tfoot th').each(function () {
+                var title = $(this).text();
+                $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+            });
+
+            $('.table').each(function() {
+                var table = $(this).DataTable({
+                    "paging": false
+                });
+
+                // Apply the search
+                table.columns().every(function () {
+                    var that = this;
+                    $('input', this.footer()).on('keyup change', function () {
+                        if (that.search() !== this.value) {
+                            that
+                                .search(this.value)
+                                .draw();
+                                console.log(this.value);
+                        }
+                    });
+                });
+            });
+
+        });
+    </script>
+</head>
+
+<body id="home" data-spy="scroll" data-target="#sidebar-nav" data-offset="10">
+    <div class="container-fluid">
+        <div class="row">
+            <div id="sidebar" class="col-xs-2 affix" style="overflow: scroll !important;">
+                <div class="sidebar-content">
+                    <div id="sidebar-nav">
+                        <ul class="nav nav-pills nav-stacked">
+                            <li>
+                                <a class="" href="#top">Top</a>
+                            </li>
+                            <li>
+                                <a class="" href="#globalevars">Global eVars &amp; props</a>
+                            </li>
+                            <li>
+                                <a class="" href="#evars">Standard eVars &amp; props</a>
+                            </li>
+                            <li>
+                                <a class="" href="#events">Standard Events</a>
+                            </li>
+                            <li>
+                                <a class="" href="#co-general">Checkout products</a>
+                            </li>
+                            <li>
+                                <a class="" href="#co-evars">Checkout eVars &amp; Props</a>
+                            </li>
+                            <li>
+                                <a class="" href="#co-events">Checkout events</a>
+                            </li>
+                            <li>
+                                <a class="" href="#sem">SEM / SMM</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div>
+            <div id="content" class="col-xs-10 col-xs-offset-2 ">
+                <div id="top" class="well">
+                    <h1 class="text-center">Tealium &amp; Adobe Analytics</h1>
+                </div>
+                <h2 id="globalevars">Global eVars &amp; props</h2>
+                <p>These vaules should be seen in all page view and click events</p>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tealium UDO</th>
+                            <th>Adobe Mapping</th>
+                            <th>Description</th>
+                            <th>Expected Value</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Tealium UDO</th>
+                            <th>Adobe Mapping</th>
+                            <th>Description</th>
+                            <th>Expected Value</th>
+                        </tr>
+                    </tfoot>
+
+                    <tr>
+                        <td>page_name</td>
+                        <td>pageName, evar1, prop1</td>
+                        <td>Formatted name of current page</td>
+                        <td>home-page, internet etc...</td>
+                    </tr>
+                    <tr>
+                        <td>page_section</td>
+                        <td>channel, evar2, prop2</td>
+                        <td>Page Path level 1</td>
+                        <td>internet, phone etc...</td>
+                    </tr>
+                    <tr>
+                        <td>referring_url</td>
+                        <td>evar3, prop3</td>
+                        <td>Previous Page URL</td>
+                        <td>document.referrer</td>
+                    </tr>
+                    <tr>
+                        <td>hour_of_day</td>
+                        <td>evar5, prop5</td>
+                        <td>Formatted time string</td>
+                        <td>day of week|timestamp(h:m:s A)</td>
+                    </tr>
+                    <tr>
+                        <td>timestamp</td>
+                        <td>evar7, prop7</td>
+                        <td>Timestamp</td>
+                        <td>Example: Wed Dec 06 2017 13:15:51 GMT-0700 (MST)</td>
+                    </tr>
+                    <tr>
+                        <td>site_name</td>
+                        <td>evar8, prop8</td>
+                        <td>Current site name or location.hostname</td>
+                        <td>Example: shaw.ca</td>
+                    </tr>
+                    <tr>
+                        <td>user_agent_string</td>
+                        <td>evar9, prop9</td>
+                        <td>Current Browser: navigator.userAgent</td>
+                        <td>Example: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) ...</td>
+                    </tr>
+                    <tr>
+                        <td>url</td>
+                        <td>evar10, prop10</td>
+                        <td>Current Page URL</td>
+                        <td>document.location.href</td>
+                    </tr>
+                    <tr>
+                        <td>site_version</td>
+                        <td>evar11, prop11</td>
+                        <td>Current site code version</td>
+                        <td>1.0</td>
+                    </tr>
+                    <tr>
+                        <td>site_language</td>
+                        <td>evar14, prop14</td>
+                        <td>ISO Language Code</td>
+                        <td>en-CA / en-US for English or fr-CA for French</td>
+                    </tr>
+                    <tr>
+                        <td>user_login_state</td>
+                        <td>evar19, prop19</td>
+                        <td>Current Logged in state</td>
+                        <td>logged-out</td>
+                    </tr>
+                    <tr>
+                        <td>taxonomy_level</td>
+                        <td>evar34, prop34</td>
+                        <td>Depth of taxomy</td>
+                        <td>Number</td>
+                    </tr>
+                    <tr>
+                        <td>user_type</td>
+                        <td>evar51, prop51</td>
+                        <td>Customer Type</td>
+                        <td>new, existing or unknown</td>
+                    </tr>
+                </table>
+                <h2 id="evars">Standard eVars &amp; props</h2>
+                <p>Excludes Checkout</p>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tealium UDO</th>
+                            <th>Adobe Mapping</th>
+                            <th>Description</th>
+                            <th>Expected Value</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Tealium UDO</th>
+                            <th>Adobe Mapping</th>
+                            <th>Description</th>
+                            <th>Expected Value</th>
+                        </tr>
+                    </tfoot>
+                    <tr>
+                        <td>page_name</td>
+                        <td>pageName, evar1, prop1</td>
+                        <td>Formatted name of current page</td>
+                        <td>home-page, internet etc...</td>
+                    </tr>
+                    <tr>
+                        <td>page_section</td>
+                        <td>channel, evar2, prop2</td>
+                        <td>Page Path level 1</td>
+                        <td>internet, phone etc...</td>
+                    </tr>
+                    <tr>
+                        <td>referring_url</td>
+                        <td>evar3, prop3</td>
+                        <td>Previous Page URL</td>
+                        <td>document.referrer</td>
+                    </tr>
+                    <tr>
+                        <td>new_repeat</td>
+                        <td>evar3, prop3</td>
+                        <td>Previous Page URL</td>
+                        <td>document.referrer</td>
+                    </tr>
+                    <tr>
+                        <td>hour_of_day</td>
+                        <td>evar5, prop5</td>
+                        <td>Formatted time string</td>
+                        <td>day of week|timestamp(h:m:s A)</td>
+                    </tr>
+                    <tr>
+                        <td>site_name</td>
+                        <td>evar8, prop8</td>
+                        <td>Current site name or location.hostname</td>
+                        <td>Example: shaw.ca</td>
+                    </tr>
+                    <tr>
+                        <td>user_agent_string</td>
+                        <td>evar9, prop9</td>
+                        <td>Current Browser: navigator.userAgent</td>
+                        <td>Example: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) ...</td>
+                    </tr>
+                    <tr>
+                        <td>site_version</td>
+                        <td>evar11, prop11</td>
+                        <td>Current site code version</td>
+                        <td>1.0</td>
+                    </tr>
+                    <tr>
+                        <td>site_language</td>
+                        <td>evar14, prop14</td>
+                        <td>ISO Language Code</td>
+                        <td>en-CA / en-US for English or fr-CA for French</td>
+                    </tr>
+                    <tr>
+                        <td>user_login_state</td>
+                        <td>evar19, prop19</td>
+                        <td>Current Logged in state</td>
+                        <td>logged-out</td>
+                    </tr>
+                    <tr>
+                        <td>account_id</td>
+                        <td>evar20, prop20</td>
+                        <td>Customer Account ID (My Shaw / My Shaw Direct)</td>
+                        <td>SHA-256 Hashed String (64 Chars)</td>
+                    </tr>
+                    <tr>
+                        <td>home_postal_code</td>
+                        <td>evar22, zip</td>
+                        <td>Visitor Postal Code</td>
+                        <td>SHA-256 Hashed String (64 Chars)</td>
+                    </tr>
+                    <tr>
+                        <td>platform</td>
+                        <td>prop22</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>page_section_l2</td>
+                        <td>prop23</td>
+                        <td>Page Depth Level 2</td>
+                        <td>String: internet, phone etc...</td>
+                    </tr>
+                    <tr>
+                        <td>page_section_l3</td>
+                        <td>prop25</td>
+                        <td>Page Depth Level 3</td>
+                        <td>String</td>
+                    </tr>
+                    <tr>
+                        <td>page_section_l4</td>
+                        <td>prop26</td>
+                        <td>Page Depth Level 4</td>
+                        <td>String</td>
+                    </tr>
+                    <tr>
+                        <td>page_section_l5</td>
+                        <td>prop27</td>
+                        <td>Page Depth Level 5</td>
+                        <td>String</td>
+                    </tr>
+                    <tr>
+                        <td>ab_testing_page_type</td>
+                        <td>evar33, prop33</td>
+                        <td>ION Testing evar</td>
+                        <td>A/B Experiment Name</td>
+                    </tr>
+                    <tr>
+                        <td>taxonomy_level</td>
+                        <td>evar34, prop34</td>
+                        <td>Total Page Depth</td>
+                        <td>Number</td>
+                    </tr>
+                    <tr>
+                        <td>attribution_id</td>
+                        <td>evar35, prop35</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>employee_id</td>
+                        <td>evar38</td>
+                        <td>Current Employee ID</td>
+                        <td>SHA-256 Hashed String (64 Chars)</td>
+                    </tr>
+                    <tr>
+                        <td>content_template_name</td>
+                        <td>evar50,&nbsp; prop50</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>user_type</td>
+                        <td>evar51, prop51</td>
+                        <td>Customer Type</td>
+                        <td>new, existing or unknown</td>
+                    </tr>
+
+                    <tr>
+                        <td>account_info</td>
+                        <td>evar21, prop21</td>
+                        <td>My Shaw / My Shaw Direct - Account information</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>account_products</td>
+                        <td>evar23</td>
+                        <td>My Shaw / My Shaw Direct - Product information</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>serviceability_type</td>
+                        <td>evar31,&nbsp; prop31, event31, event32, event35,&nbsp;</td>
+                        <td>success: event31; failure: event32; check-availability: event34;</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>internal_search_type</td>
+                        <td>evar37, prop37</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>error_code</td>
+                        <td>evar37, prop37</td>
+                        <td>Optionally use with site_error</td>
+                        <td>String: Error Code</td>
+                    </tr>
+                    <tr>
+                        <td>ai_search_keyword</td>
+                        <td>prop30</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>serviceability_details</td>
+                        <td>evar40, prop40</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>number_search_results</td>
+                        <td>prop38</td>
+                        <td>Search Pages</td>
+                        <td>Number: Total search results</td>
+                    </tr>
+                    <tr>
+                        <td>lead_form_name</td>
+                        <td>evar66, prop66</td>
+                        <td>Lead Forms / Checkout - Form Name</td>
+                        <td>bluesky</td>
+                    </tr>
+                    <tr>
+                        <td>account_modified</td>
+                        <td>evar73, prop73</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>shaw_id_category</td>
+                        <td>evar78</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>install_method</td>
+                        <td>prop39</td>
+                        <td>User chosen install method</td>
+                        <td>Self / Professional</td>
+                    </tr>
+                    <tr>
+                        <td>request_id</td>
+                        <td>prop42</td>
+                        <td>Lead form request ID</td>
+                        <td>_requestID URL Param</td>
+                    </tr>
+                    <tr>
+                        <td>survey_id</td>
+                        <td>evar72</td>
+                        <td>Survey ID</td>
+                        <td>String/Number</td>
+                    </tr>
+                    <tr>
+                        <td>builder_type</td>
+                        <td>event47, event48</td>
+                        <td>full: event47; addon: event48</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>site_error</td>
+                        <td>evar28, prop28</td>
+                        <td>Global Site Error. To be used with siteerror event</td>
+                        <td>String</td>
+                    </tr>
+                    <tr>
+                        <td>tv_channels</td>
+                        <td>list2</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>prod_view</td>
+                        <td>prodView</td>
+                        <td>Define if environment is Production.</td>
+                        <td>Bool</td>
+                    </tr>
+                    <tr>
+                        <td>email_optin</td>
+                        <td>event8</td>
+                        <td>Email Optin Event</td>
+                        <td>Bool</td>
+                    </tr>
+                    <tr>
+                        <td>has_shaw_id</td>
+                        <td>event23</td>
+                        <td>true:event23</td>
+                        <td>Bool</td>
+                    </tr>
+                    <tr>
+                        <td>navigationAction</td>
+                        <td>evar12, prop12</td>
+                        <td>General link click</td>
+                        <td>data-value from html</td>
+                    </tr>
+                    <tr>
+                        <td>socialAction</td>
+                        <td>evar58, prop58</td>
+                        <td>Social Link Click</td>
+                        <td>data-value from html</td>
+                    </tr>
+
+                    <tr>
+                        <td>s_account</td>
+                        <td>s_account</td>
+                        <td>Used to set adobe account.</td>
+                        <td>utsshawconsumerprod</td>
+                    </tr>
+                    <tr>
+                        <td>timestamp</td>
+                        <td>evar7, prop7</td>
+                        <td>Timestamp</td>
+                        <td>Example: Wed Dec 06 2017 13:15:51 GMT-0700 (MST)</td>
+                    </tr>
+                    <tr>
+                        <td>marketing_cloud_id</td>
+                        <td>evar13, prop3, visitorID</td>
+                        <td>Adobe Marketing Cloud ID</td>
+                        <td>36449776129700610624230157605763851259</td>
+                    </tr>
+                    <tr>
+                        <td>internal_search_term</td>
+                        <td>evar36, prop36</td>
+                        <td>Search Pages</td>
+                        <td>Search Keywords</td>
+                    </tr>
+                    <tr>
+                        <td>url</td>
+                        <td>evar10, prop10</td>
+                        <td>Current Page URL</td>
+                        <td>document.location.href</td>
+                    </tr>
+                    <tr>
+                        <td>chat_id</td>
+                        <td>evar65</td>
+                        <td>Chat ID, use with event chatAction</td>
+                        <td>xxxx-xxxxx-xxxx-xxxxx</td>
+                    </tr>
+                    <tr>
+                        <td>content_engagement_type</td>
+                        <td>evar61</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>genesis_clicktale</td>
+                        <td>evar63</td>
+                        <td>Clicktale data</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>push_notification_status</td>
+                        <td>evar70</td>
+                        <td>My Shaw App</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>service_agreement_flag</td>
+                        <td>evar69, prop69</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>apple_pay_status</td>
+                        <td>evar71</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>serviceability_postal_code</td>
+                        <td>evar32</td>
+                        <td>Servicability Postal Code</td>
+                        <td>SHA-256 Hashed String (64 Chars)</td>
+                    </tr>
+                    <tr>
+                        <td>intcid</td>
+                        <td>evar24, prop24</td>
+                        <td>Querystring Parameter</td>
+                        <td>intcid querystring parameter</td>
+                    </tr>
+                    <tr>
+                        <td>cid</td>
+                        <td>campaign, evar30</td>
+                        <td>Contains SEM &amp; Social tracking codes</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>lead_form_product_name</td>
+                        <td>evar48</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>lead_form_product_type</td>
+                        <td>evar49</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>province</td>
+                        <td>state, evar41, prop41</td>
+                        <td>Visitor Province (From Cookie: Location)</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>partner_info</td>
+                        <td>evar98, event101</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>form_name</td>
+                        <td>evar6, prop6</td>
+                        <td>Populate with form name</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>form_step</td>
+                        <td>evar15, prop15</td>
+                        <td>Start: cart start; Finish: thankyou</td>
+                        <td>cart start, .... thank you</td>
+                    </tr>
+                    <tr>
+                        <td>internal_promo_impression</td>
+                        <td>list1</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>internal_promo_offer</td>
+                        <td>evar68</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>internal_promo_position</td>
+                        <td>evar64</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>builderAction</td>
+                        <td>prop47</td>
+                        <td>Builder Click Events</td>
+                        <td>Similar to navigationAction</td>
+                    </tr>
+                    <tr>
+                        <td>seo_cities</td>
+                        <td>evar62, prop62</td>
+                        <td>Cities within SEO</td>
+                        <td>calgary, edmonton</td>
+                    </tr>
+                    <tr>
+                        <td>seo_province</td>
+                        <td>evar44, prop44</td>
+                        <td>Province within SEO</td>
+                        <td>alberta, british columbia</td>
+                    </tr>
+                    <tr>
+                        <td>new_repeat</td>
+                        <td>evar4, prop4</td>
+                        <td>New or Repeat visitor</td>
+                        <td>new or repeat</td>
+                    </tr>
+                    <tr>
+                        <td>optimizely</td>
+                        <td>evar42</td>
+                        <td>Optimizely</td>
+                        <td>projectid.experimentid.variationid</td>
+                    </tr>
+                    <tr>
+                        <td>quizAction</td>
+                        <td>evar60</td>
+                        <td>Shaw Business solution builder</td>
+                        <td>Similar to navigationAction</td>
+                    </tr>
+                    <tr>
+                        <td>company_size</td>
+                        <td>evar76</td>
+                        <td>Shaw Business solution builder</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>shaw_id</td>
+                        <td>evar75</td>
+                        <td>Shaw ID (My Shaw / My Shaw Direct) </td>
+                        <td>SHA-256 Hashed String (64 Chars)</td>
+                    </tr>
+                    <tr>
+                        <td>industry_type</td>
+                        <td>evar80</td>
+                        <td>Shaw Business solution builder</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>guest_size</td>
+                        <td>evar81</td>
+                        <td>Shaw Business solution builder</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>audience_id</td>
+                        <td>evar82</td>
+                        <td>Querystring Parameter</td>
+                        <td>aid querystring param</td>
+                    </tr>
+                    <tr>
+                        <td>lead_score</td>
+                        <td>evar86</td>
+                        <td>Audience Stream Parameter</td>
+                        <td>Localstorage value</td>
+                    </tr>
+                    <tr>
+                        <td>kenshoo_id</td>
+                        <td>evar83</td>
+                        <td>Querystring Parameter</td>
+                        <td>Kclid querystring param</td>
+                    </tr>
+                    <tr>
+                        <td>keyword</td>
+                        <td>evar84</td>
+                        <td>Querystring Parameter</td>
+                        <td>keyword querystring param</td>
+                    </tr>
+                    <tr>
+                        <td>sem_target_id</td>
+                        <td>evar85</td>
+                        <td>Querystring Parameter</td>
+                        <td>targetid querystring param</td>
+                    </tr>
+                </table>
+
+
+
+
+
+                <h2 id="events">Events</h2>
+                <p>These vaules should be set where neccesary</p>
+                <p>Click events can be triggered with HTML by using:
+                    <code>data-event="{{Tealium UDO}}" data-value="{{Button Value}}"</code> OR in JavaScript
+                    <br />
+                    <code>utag_data['event_name:{{Tealium UDO}}'] = {{ Value }};</code>
+                </p>
+                <p>Page View events can be triggerd by using:
+                    <code>utag_data['event_name:{{Tealium UDO}}'] = true;</code>
+                </p>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tealium UDO</th>
+                            <th>Adobe Mapping</th>
+                            <th>Triggering</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Tealium UDO</th>
+                            <th>Adobe Mapping</th>
+                            <th>Triggering</th>
+                            <th>Description</th>
+                        </tr>
+                    </tfoot>
+                    <tr>
+                        <td>
+                            <strong>navigationAction</strong>
+                        </td>
+                        <td>
+                            <strong>event12</strong>
+                        </td>
+                        <td>
+                            <strong>Click Event - General Link</strong>
+                        </td>
+                        <td>
+                            <strong>Default / Primary link event</strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>linkEvent</td>
+                        <td>event12</td>
+                        <td>Click Event - General</td>
+                        <td>*Legacy of navigationAction*</td>
+                    </tr>
+                    <tr>
+                        <td>emailAction</td>
+                        <td>event11, event12</td>
+                        <td>Click Event -&nbsp;Email</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>spaAction</td>
+                        <td>event11, event12</td>
+                        <td>Click Event -&nbsp;Spa</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>contentAction</td>
+                        <td>event112, event12</td>
+                        <td>Click Event -&nbsp;Content</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>helpfulAction</td>
+                        <td>event114, event12</td>
+                        <td>Click Event -&nbsp;Help</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>helpfulContent</td>
+                        <td>event114, event12</td>
+                        <td>Click Event -&nbsp;Help Content</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>bookmarkAction</td>
+                        <td>event115, event12</td>
+                        <td>Click Event -&nbsp;Bookmark</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>postAction</td>
+                        <td>event116, event12</td>
+                        <td>Click Event -&nbsp;Post</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>replyAction</td>
+                        <td>event116, event12</td>
+                        <td>Click Event -&nbsp;Reply</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>callAction</td>
+                        <td>event13, event12</td>
+                        <td>Click Event -&nbsp;Call&nbsp;</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>builderAction</td>
+                        <td>event16, event12</td>
+                        <td>Click Event -&nbsp;Buider</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>logoutAction</td>
+                        <td>event21, event12</td>
+                        <td>Click Event -&nbsp;Logout</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>chatAction</td>
+                        <td>event65, event12</td>
+                        <td>Click Event -&nbsp;Chat</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>upgradeAction</td>
+                        <td>event96, event12</td>
+                        <td>Click Event -&nbsp;Upgrade</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>downgradeAction</td>
+                        <td>event97, event12</td>
+                        <td>Click Event -&nbsp;Downgrade</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>changePassword</td>
+                        <td>event22, event12</td>
+                        <td>Click Event -&nbsp;Change Password</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>loginSuccess</td>
+                        <td>event19, event12</td>
+                        <td>Click Event - Login Success</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>registrationSuccess</td>
+                        <td>event68</td>
+                        <td>Page View Event - Registration Success</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>promotionAction</td>
+                        <td>event25, event12</td>
+                        <td>Click Event - Promotion</td>
+                        <td>Fire events when a promotional link is clicked</td>
+                    </tr>
+                    <tr>
+                        <td>accountModified</td>
+                        <td>event77, event12</td>
+                        <td>Click Event - Account Modified</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>siteerror</td>
+                        <td>event28</td>
+                        <td>Page View Event / Click Event - Generic Site Error</td>
+                        <td>Used in association site site_error: errors</td>
+                    </tr>
+                    <tr>
+                        <td>socialAction</td>
+                        <td>event58</td>
+                        <td>Click Event - Social</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>internalSearchResultsNotFound</td>
+                        <td>event37</td>
+                        <td>Page View Event - No Search Results</td>
+                        <td>To be used in association with number_search_resuts: 0</td>
+                    </tr>
+                    <tr>
+                        <td>internalSearchResultsFound</td>
+                        <td>event36</td>
+                        <td>Page View Event - Search Results</td>
+                        <td>To be used in association with number_search_resuts: number</td>
+                    </tr>
+                    <tr>
+                        <td>servey-accepted</td>
+                        <td>event71</td>
+                        <td>Page View Event - Servey Accepted</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>service-agreement-accept</td>
+                        <td>event50, event26</td>
+                        <td>Click Event - Accept Service Agreement</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>referral form load</td>
+                        <td>event69</td>
+                        <td>Page View Event - View Referral Form</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>referral form submit</td>
+                        <td>event73</td>
+                        <td>Cick Event - Referral Form Submit</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>moving form load</td>
+                        <td>event72</td>
+                        <td>Page View Event - Moving Form</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>moving lead submit</td>
+                        <td>event73</td>
+                        <td>Cick Event - Moving Form Submit</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>internal_promo_impression</td>
+                        <td>event24</td>
+                        <td>Page View Event - Internal Promo</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>quizAction</td>
+                        <td>event60</td>
+                        <td>Click Event - Quiz Action</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>activationSuccess</td>
+                        <td>event18</td>
+                        <td>Page View Event - Account Activation</td>
+                        <td></td>
+                    </tr>
+                </table>
+
+
+                <h2 id="co-general">Checkout Products</h2>
+                <p>Otherwise known as s.products, these vaules should be set where neccesary in a checkout process.</p>
+                <p>
+                    <strong>These are arrays.</strong> When pushing an item to an array, the values must line up across each of these
+                    items.</p>
+                <p>Product values &amp; events can be populated / triggerd by using:
+                    <code>utag_data.{{Tealium UDO}}.push(value);</code>
+                </p>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tealium UDO</th>
+                            <th>Adobe Mapping</th>
+                            <th>Description</th>
+                            <th>Expected Value</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Tealium UDO</th>
+                            <th>Adobe Mapping</th>
+                            <th>Description</th>
+                            <th>Expected Value</th>
+                        </tr>
+                    </tfoot>
+                    <tr>
+                        <td>product_id</td>
+                        <td>PRODUCTS_eVar28</td>
+                        <td>SKU, unique identifier or product name</td>
+                        <td>String</td>
+                    </tr>
+                    <tr>
+                        <td>product_quantity</td>
+                        <td>PRODUCTS_quantity</td>
+                        <td>Item Quantity</td>
+                        <td>Number</td>
+                    </tr>
+                    <tr>
+                        <td>product_sale_price</td>
+                        <td>PRODUCTS_event41</td>
+                        <td>Final price item was sold for inclsive of all discounts.</td>
+                        <td>Number</td>
+                    </tr>
+                    <tr>
+                        <td>product_name</td>
+                        <td>PRODUCTS_eVar48</td>
+                        <td>Name of the product</td>
+                        <td>String</td>
+                    </tr>
+                    <tr>
+                        <td>product_type</td>
+                        <td>PRODUCTS_eVar49</td>
+                        <td>Product Type: Programing, internet, tvservice etc...</td>
+                        <td>String</td>
+                    </tr>
+                    <tr>
+                        <td>product_regular_price</td>
+                        <td>PRODUCTS_event39</td>
+                        <td>Regular price of the product before discounts</td>
+                        <td>Number</td>
+                    </tr>
+                    <tr>
+                        <td>product_offer_discount</td>
+                        <td>PRODUCTS_event43</td>
+                        <td>Product Discount Amount</td>
+                        <td>Number</td>
+                    </tr>
+                    <tr>
+                        <td>product_monthly_charge_less_discount</td>
+                        <td>PRODUCTS_event40</td>
+                        <td>Monthly Charges without discount</td>
+                        <td>Number</td>
+                    </tr>
+                    <tr>
+                        <td>product_recurring_discount</td>
+                        <td>PRODUCTS_event42</td>
+                        <td>Monthly Discount</td>
+                        <td>Number</td>
+                    </tr>
+                    <tr>
+                        <td>equipment_purchase_type</td>
+                        <td>PRODUCTS_eVar18</td>
+                        <td>Only set when equipment has been purchased.</td>
+                        <td>String: Equipment Name</td>
+                    </tr>
+                    <tr>
+                        <td>equipment_purchase_revenue</td>
+                        <td>PRODUCTS_event44</td>
+                        <td>Equipment Revenue, Only set when equipment has been purchased.</td>
+                        <td>Number</td>
+                    </tr>
+                    <tr>
+                        <td>product_contract</td>
+                        <td>PRODUCTS_eVar26</td>
+                        <td>Product Contract Term</td>
+                        <td>String: 2YVP, M2M</td>
+                    </tr>
+                    <tr>
+                        <td>product_credit</td>
+                        <td>PRODUCTS_event45</td>
+                        <td>Purchase Credits on product</td>
+                        <td>Number</td>
+                    </tr>
+                    <tr>
+                        <td>product_order_type</td>
+                        <td>PRODUCTS_eVar39</td>
+                        <td>CrossSell, UpSell, Aquisition</td>
+                        <td>String: CrossSell, UpSell, Aquisition</td>
+                    </tr>
+                    <tr>
+                        <td>product_upsell</td>
+                        <td>No Tealium Mapping</td>
+                        <td>Populate with upsell if item was an upsell, false if not.</td>
+                        <td>String/Bool</td>
+                    </tr>
+                    <tr>
+                        <td>product_xsell</td>
+                        <td>No Tealium Mapping</td>
+                        <td>Populate with xsell if item was an xsell, false if not.</td>
+                        <td>String/Bool</td>
+                    </tr>
+                    <tr>
+                        <td>product_rgu</td>
+                        <td>PRODUCTS_event51</td>
+                        <td>RGU Event - Set only when new_customer_type = new</td>
+                        <td>Number: 1 or 0</td>
+                    </tr>
+                    <tr>
+                        <td>product_category</td>
+                        <td>PRODUCTS_category</td>
+                        <td>Category of the product.</td>
+                        <td>String</td>
+                    </tr>
+                    <tr>
+                        <td>offer_id</td>
+                        <td>PRODUCTS_eVar27</td>
+                        <td>Populate when an offer exists, false if not</td>
+                        <td>String/Bool</td>
+                    </tr>
+                    <tr>
+                        <td>addonAction</td>
+                        <td>PRODUCTS_eVar67</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+
+                </table>
+                <h2 id="co-evars">Checkout eVars &amp; props</h2>
+                <p>Trigger by using:
+                    <code>utag_data.{{Tealium UDO}} = {{ Value }};</code>
+                </p>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tealium UDO</th>
+                            <th>Adobe Mapping</th>
+                            <th>Description</th>
+                            <th>Expected Value</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Tealium UDO</th>
+                            <th>Adobe Mapping</th>
+                            <th>Description</th>
+                            <th>Expected Value</th>
+                        </tr>
+                    </tfoot>
+                    <tr>
+                        <td>order_id</td>
+                        <td>purchaseID</td>
+                        <td>Populate when an order_id exists remove if not</td>
+                        <td>String/Number</td>
+                    </tr>
+                    <tr>
+                        <td>order_currency</td>
+                        <td>None</td>
+                        <td>Current Currency</td>
+                        <td>CAD</td>
+                    </tr>
+                    <tr>
+                        <td>order_total</td>
+                        <td>None</td>
+                        <td>Order Total</td>
+                        <td>Number</td>
+                    </tr>
+                    <tr>
+                        <td>form_name</td>
+                        <td>evar6, prop6</td>
+                        <td>Checkout Type|Additional Details</td>
+                        <td>leadform|2351720</td>
+                    </tr>
+                    <tr>
+                        <td>form_step</td>
+                        <td>evar15, prop15</td>
+                        <td>Used on all forms</td>
+                        <td>Start: cart start; Finish: thankyou</td>
+                    </tr>
+                </table>
+                <h2 id="co-events">Checkout Events</h2>
+                <p>Trigger by using:
+                    <code>utag_data['event_name:{{Tealium UDO}}'] = true;</code>
+                </p>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tealium UDO</th>
+                            <th>Adobe Mapping</th>
+                            <th>Triggering</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Tealium UDO</th>
+                            <th>Adobe Mapping</th>
+                            <th>Triggering</th>
+                            <th>Description</th>
+                        </tr>
+                    </tfoot>
+                    <tr>
+                        <td>scAddAction</td>
+                        <td>scAdd</td>
+                        <td>Cart View Event / Link Click Event - Products added to cart</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>scRemoveAction</td>
+                        <td>scRemove</td>
+                        <td>Cart View Event / Link Click Event - Products removed from cart</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>scOpenAction</td>
+                        <td>scOpen</td>
+                        <td>Cart View Event - Cart Opened</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>lead form load</td>
+                        <td>scCheckout</td>
+                        <td>Cart View Event -&nbsp;In Checkout Flow</td>
+                        <td>To be used in association with lead_form_name</td>
+                    </tr>
+                    <tr>
+                        <td>lead submit</td>
+                        <td>purchase</td>
+                        <td>Cart View Event - Order Complete</td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td>form_step</td>
+                        <td>event26</td>
+                        <td>Cart View Event - Form Step</td>
+                        <td>To be used in association with form_step</td>
+                    </tr>
+
+                </table>
+                <h2 id="sem">SEM</h2>
+                <p>SEM Values</p>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tealium UDO</th>
+                            <th>Adobe Mapping</th>
+                            <th>Description</th>
+                            <th>Expected Value</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Tealium UDO</th>
+                            <th>Adobe Mapping</th>
+                            <th>Description</th>
+                            <th>Expected Value</th>
+                        </tr>
+                    </tfoot>
+                    <tr>
+                        <td>internal_promo_impression</td>
+                        <td>list1</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>internal_promo_offer</td>
+                        <td>evar68</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>internal_promo_position</td>
+                        <td>evar64</td>
+                        <td>Unknown</td>
+                        <td>Unknown</td>
+                    </tr>
+                    <tr>
+                        <td>intcid</td>
+                        <td>evar24, prop24</td>
+                        <td>Querystring Parameter</td>
+                        <td>intcid querystring parameter</td>
+                    </tr>
+                    <tr>
+                        <td>cid</td>
+                        <td>campaign, evar30</td>
+                        <td>Contains SEM &amp; Social tracking codes</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>audience_id</td>
+                        <td>evar82</td>
+                        <td>Querystring Parameter</td>
+                        <td>aid querystring param</td>
+                    </tr>
+                    <tr>
+                        <td>lead_score</td>
+                        <td>evar86</td>
+                        <td>Audience Stream Parameter</td>
+                        <td>Localstorage value</td>
+                    </tr>
+                    <tr>
+                        <td>kenshoo_id</td>
+                        <td>evar83</td>
+                        <td>Querystring Parameter</td>
+                        <td>Kclid querystring param</td>
+                    </tr>
+                    <tr>
+                        <td>keyword</td>
+                        <td>evar84</td>
+                        <td>Querystring Parameter</td>
+                        <td>keyword querystring param</td>
+                    </tr>
+                    <tr>
+                        <td>sem_target_id</td>
+                        <td>evar85</td>
+                        <td>Querystring Parameter</td>
+                        <td>targetid querystring param</td>
+                    </tr>
+                </table>
+                <div id="screen-gap"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
