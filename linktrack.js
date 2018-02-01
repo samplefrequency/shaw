@@ -1,5 +1,6 @@
 /**
  * @author Mike Barkemeyer <mike.barkemeyer@sjrb.ca>
+ * @version 1.1
  * @requires jQuery
  * @namespace analytics
  * @extends SHAW
@@ -74,10 +75,13 @@ window.utag_data = default_utag_data;
         var analytics = {
             settings: {
                 debug: (localStorage.getItem('shaw-debug') === 'true') || false,
-                manual_view: false,
-                view_complete: false,
-                allow_double_fire: false,
-                bsps: 0,
+                manual_view: false, //Diable auto firing of view call
+                view_complete: false, //Bool controls double firing
+                allow_double_fire: false, //Allow multiple views to fire
+                bsps: 0, //Counter for bsps events
+                wait_for_all_tags: true, //Wait for tealium tags to finish loading.
+                retry_tealium_failure: false, //If tealium throws an error, retry.
+                retry_limit: 1, //Number of times to retry on tealium failure.
 
                 //Remap click events from legacy to UTS.
                 event_remap: {
@@ -130,67 +134,140 @@ window.utag_data = default_utag_data;
                 var eoId = analytics.tools.get_url_param('eoId') ? '?eoId=' + analytics.tools.get_url_param('eoId') : '';
                 analytics.settings.pages = {
                     builder: {
-                        checkout_pages: [
-                            '/store/builder/builder.jsp',
-                            '/store/builder/addOnsBuilder.jsp'
+                        form_steps: [
+                            {
+                                url: ['/store/builder/builder.jsp','/store/builder/addOnsBuilder.jsp'],
+                                label: 'Cart Start',
+                                events: ['scOpenAction'],
+                                pagename: 'builder|cart-start'
+                            },
+                            {
+                                url: '/store/checkout/step1.jsp',
+                                label: 'Contact Info',
+                                events: ['lead form load'],
+                                pagename: 'builder|contact-info|step-1'
+                            },
+                            {
+                                url: '/store/checkout/step2.jsp',
+                                label: 'Installation',
+                                events: ['lead form load'],
+                                pagename: 'builder|installation|step-2'
+                            },
+                            {
+                                url: '/store/checkout/step3.jsp',
+                                label: 'Review Submit',
+                                events: ['lead form load'],
+                                pagename: 'builder|review-submit|step-3'
+                            },
+                            {
+                                url: '/store/checkout/thankYou.jsp',
+                                label: 'Thankyou',
+                                pagename: 'builder|thankyou',
+                                is_thanks: true
+                            }
                         ],
-                        thanks: [
-                            '/store/checkout/thankYou.jsp'
-                        ],
-                        form_steps: {
-                            '/store/builder/builder.jsp': 'Cart Start',
-                            '/store/checkout/step1.jsp' : 'Cart Start',
-                            '/store/checkout/step2.jsp' : 'Installation',
-                            '/store/checkout/step3.jsp' : 'Review Submit',
-                        },
-                        json: '/store/planBuilder/cart/cart.jsp'
+                        json: '/store/planBuilder/cart/cart.jsp',
+                        form_name: 'builder'
                     },
-
                     bluesky: {
-                        checkout_pages: [
-                            '/store/blueskytv/configurator.jsp', '/store/cart/orderLeadForm3.jsp'
+                        form_steps: [
+                            {
+                                url: '/store/blueskytv/configurator.jsp',
+                                label: 'Cart Start',
+                                events: ['scOpenAction'],
+                                pagename: 'bluesky|cart-start',
+                                wait: 3000
+                            },
+                            {
+                                url: '/store/cart/orderLeadForm3.jsp',
+                                label: 'Contact Info',
+                                events: ['lead form load'],
+                                pagename: 'bluesky|contact-info'
+                            },
+                            {
+                                url: '/store/cart/orderLeadFormThankyou2.jsp',
+                                label: 'Thankyou',
+                                pagename: 'bluesky|thankyou',
+                                is_thanks: true
+                            }
                         ],
-                        thanks: [
-                            '/store/cart/orderLeadFormThankyou2.jsp'
-                        ],
-                        form_steps: {
-                            '/store/blueskytv/configurator.jsp' : 'Cart Start',
-                            '/store/cart/orderLeadForm3.jsp' : 'Contact Info',
-                        },
                         lead_form_name: 'lead-form|bluesky',
-                        json: '/store/xhr/data/blueskytv/getOrderSummaryJSON.jsp'
+                        json: '/store/xhr/data/blueskytv/getOrderSummaryJSON.jsp',
+                        form_name: 'bluesky'
                     },
                     leadform: {
-                        checkout_pages: [
-                            '/store/cart/orderLeadForm2.jsp', '/store/cart/orderLeadForm-contactDetails.jsp', '/store/campaign/student-p2.jsp'
+                        form_steps: [
+                            {
+                                url: '/store/cart/orderLeadForm2.jsp',
+                                label: 'Contact Info',
+                                events: ['scOpenAction'],
+                                pagename: 'leadform|contact-info'
+                            },
+                            {
+                                url: '/store/cart/orderLeadForm-contactDetails.jsp',
+                                label: 'Contact Info',
+                                events: ['lead form load'],
+                                pagename: 'leadform|contact-details|step-1'
+                            },
+                            {
+                                url: '/store/cart/orderLeadForm-serviceAddress.jsp',
+                                label: 'Service Address',
+                                events: ['lead form load'],
+                                pagename: 'leadform|service-address|step-2'
+                            },
+                            {
+                                url: '/store/cart/orderLeadForm-billingInfo.jsp',
+                                label: 'Billing Info',
+                                events: ['lead form load'],
+                                pagename: 'leadform|billing-info|step-3'
+                            },
+                            {
+                                url: '/store/cart/orderLeadForm-reviewSubmit.jsp',
+                                label: 'Review Submit',
+                                events: ['lead form load'],
+                                pagename: 'leadform|review-submit|step-4'
+
+                            },
+                            {
+                                url: '/store/cart/orderLeadForm-valuePlan.jsp',
+                                label: 'Value Plan',
+                                events: ['lead form load'],
+                                pagename: 'leadform|value-plan|step-5'
+                            },
+                            {
+                                url: ['/store/cart/orderLeadFormThankyou.jsp', '/store/cart/orderLeadForm-thankYou.jsp'],
+                                label: 'Thankyou',
+                                pagename: 'leadform|thankyou',
+                                is_thanks: true
+                            }
                         ],
-                        thanks: [
-                            '/store/cart/orderLeadFormThankyou.jsp', '/store/cart/orderLeadForm-thankYou.jsp'
-                        ],
-                        form_steps: {
-                            '/store/cart/orderLeadForm2.jsp' : 'Cart Start',
-                            '/store/cart/orderLeadForm-contactDetails.jsp' : 'Cart Start',
-                            '/store/cart/orderLeadForm-serviceAddress.jsp' : 'Service Address',
-                            '/store/cart/orderLeadForm-billingInfo.jsp' : 'Billing Info',
-                            '/store/cart/orderLeadForm-reviewSubmit.jsp' : 'Review Submit',
-                            '/store/cart/orderLeadForm-valuePlan.jsp' : 'Value Plan',
-                        },
                         lead_form_name: "lead-form|"+(analytics.tools.get_url_param('eoId') || 'leadform'),
+                        form_name: 'lead form',
                         json: '/store/cart/leadTrackingJson.jsp' + eoId
                     },
                     student: {
-                        checkout_pages: [
-                            '/store/campaign/student-p2.jsp'
+                        form_steps: [
+                            {
+                                url: '/store/campaign/student-p1.jsp',
+                                label: 'Cart Start',
+                                events: ['scOpenAction'],
+                                pagename: 'student-leadform|cart-start'
+                            },
+                            {
+                                url: '/store/campaign/student-p2.jsp',
+                                label: 'Contact Info',
+                                events: ['scOpenAction'],
+                                pagename: 'student-leadform|contact-info'
+                            },
+                            {
+                                url: '/store/campaign/student-thankyou.jsp',
+                                label: 'Thankyou',
+                                pagename: 'student-leadform|thankyou',
+                                is_thanks: true
+                            }
                         ],
-                        thanks: [
-                            '/store/campaign/student-thankyou.jsp'
-                        ],
-                        form_steps: {
-                            '/store/campaign/student-p1.jsp' : 'Cart Start',
-                            '/store/campaign/student-p2.jsp' : 'Contact Info',
-                            '/store/campaign/student-thankyou.jsp' : 'Thankyou'
-                        },
-                        lead_form_name: "lead-form|"+($('body').data('eoid') || 'student'),
+                        lead_form_name: "lead-form|student|"+($('body').data('eoid') || 'eoid-not-in-body'),
+                        form_name: 'student',
                         json: '/store/cart/leadTrackingJson.jsp?eoId='+$('body').data('eoid')
                     },
                 };
@@ -235,44 +312,92 @@ window.utag_data = default_utag_data;
                     };
                 }
 
-
                 Object.keys(analytics.settings.pages).forEach(function(k,v){
-                    if ($.inArray(document.location.pathname, analytics.settings.pages[k].checkout_pages) > -1 || $.inArray(document.location.pathname, analytics.settings.pages[k].thanks) > -1) {
-                        analytics.settings.checkout_type = k;
-                        analytics.settings.product_json_url = analytics.settings.pages[k].json;
-                    }
-                    if ($.inArray(document.location.pathname, analytics.settings.pages[k].checkout_pages) > -1) { analytics.settings.is_checkout = true; }
-                    if ($.inArray(document.location.pathname, analytics.settings.pages[k].thanks) > -1) { analytics.settings.is_thanks = true; }
-                    if (analytics.settings.pages[k].hasOwnProperty('form_steps') && analytics.settings.pages[k].form_steps.hasOwnProperty(document.location.pathname)) {
-                        analytics.settings.checkout_type = k;
-                        analytics.settings.product_json_url = analytics.settings.pages[k].json;
-                        analytics.settings.is_checkout = true;
-                        analytics.settings.is_form_step = true;
-                        analytics.settings.form_step = analytics.settings.pages[k].form_steps[document.location.pathname];
-                        analytics.settings.lead_form_name = analytics.settings.pages[k].lead_form_name;
-                    }
-                });
+                    if (analytics.settings.pages[k].hasOwnProperty('form_steps')) {
+                        analytics.settings.pages[k].form_steps.forEach(function(value){
+                            if (value.hasOwnProperty('url')) {
+                                var step = { url: [] };
+                                if (typeof(value.url) == 'string') { step.url.push(value.url); } else { step.url = value.url; }
+                                if ($.inArray(document.location.pathname, step.url) > -1) {
+                                    analytics.settings.checkout_type = k;
+                                    analytics.settings.product_json_url = analytics.settings.pages[k].json;
+                                    analytics.settings.wait = false;
+                                    analytics.settings.is_checkout = true;
+                                    analytics.settings.is_form_step = true;
+                                    analytics.settings.lead_form_name = analytics.settings.pages[k].lead_form_name;
+                                    analytics.settings.form_name = analytics.settings.pages[k].form_name;
 
-                analytics.cart.fetch_products(function(products){
-                    $(document).trigger('Analytics.BeforeTealiumReady', analytics);
-                    if (typeof(utag) == 'undefined') {
-                        analytics.tools.inject_script('//tags.tiqcdn.com/utag/shaw/'+analytics.settings.tealium_profile+'/' + analytics.settings.env + '/utag.js')
-                        .done(function(script, textStatus) {
-                            analytics.log('Analytics: Tealium injected. \n Profile: '+ analytics.settings.tealium_profile + '\n Environment: '+ analytics.settings.env);
-                            analytics.settings.utag_view_prevented = true;
-                            $(document).trigger('Analytics.tealiumReady', analytics);
-                            if (!analytics.settings.manual_view) { analytics.tealium.view(utag_data); }
-                        })
-                        .fail(function(jqxhr, settings, exception) {
-                            analytics.log(exception);
-                            $(document).trigger('Analytics.tealiumError', exception);
+                                    if (value.hasOwnProperty('label')) {
+                                        step.label = value.label;
+                                        analytics.settings.form_step = value.label;
+                                    }
+                                    if (value.hasOwnProperty('pagename')) {
+                                        analytics.settings.pagename = value.pagename;
+                                    }
+                                    if (value.hasOwnProperty('wait')) {
+                                        analytics.settings.wait = value.wait;
+                                    }
+                                    analytics.settings.is_thanks = (value.hasOwnProperty('is_thanks') && value.is_thanks == true);
+                                    if (value.hasOwnProperty('events') && value.events.length) {
+                                        analytics.settings.cart_events = value.events;
+                                    }
+                                    return;
+                                }
+                            }
                         });
                     }
-                    else {
-                        analytics.settings.utag_view_prevented = false;
-                        analytics.log('Analytics: Tealium already loaded.. \n\nWarning: Possibly unable to modify utag_data object before utag.view() \nMove script up in document to execute before tealium \n');
-                        $(document).trigger('Analytics.tealiumReady', analytics);
-                    }
+                });
+                analytics.tools.wait().then(function() {
+                    analytics.cart.fetch_products(function(products){
+                        $(document).trigger('Analytics.BeforeTealiumReady', analytics);
+                        if (typeof(utag) == 'undefined') {
+                            analytics.tools.inject_script('//tags.tiqcdn.com/utag/shaw/'+analytics.settings.tealium_profile+'/' + analytics.settings.env + '/utag.js')
+                            .done(function(script, textStatus) {
+                                analytics.log('Analytics: Tealium injected. \n Profile: '+ analytics.settings.tealium_profile + '\n Environment: '+ analytics.settings.env);
+                                analytics.settings.utag_view_prevented = true;
+                                if (typeof(utag) !== 'undefined' && utag.hasOwnProperty('view')) {
+                                    analytics.tools.wait_for_tags().then(function(response) {
+                                        $(document).trigger('Analytics.tealiumReady', analytics);
+                                        if (!analytics.settings.manual_view) { analytics.tealium.view(utag_data); }
+                                    }, function(error) {
+                                        analytics.log('Analytics: Tealium tag loader timed out.');
+                                        $(document).trigger('Analytics.tealiumError', 'Tealium: Tealium tag loader timed out.');
+                                    });
+                                }
+                                else {
+                                    analytics.log('Analytics: Error loading utag object - Check tealium for code errors.');
+                                    $(document).trigger('Analytics.tealiumError', 'Tealium: Error loading utag object');
+                                    if (isNaN(analytics.settings.retry_count)) { analytics.settings.retry_count = 0; }
+
+                                    if (analytics.settings.retry_tealium_failure) {
+                                        analytics.settings.retry_count++;
+                                        if (analytics.settings.retry_count <= analytics.settings.retry_limit) {
+                                            analytics.log('Analytics: Retrying init', analytics.settings.retry_count, 'of', analytics.settings.retry_limit);
+                                            analytics.init();
+                                        }
+                                        else {
+                                            analytics.log('Analytics: Goodbye. (✖╭╮✖)');
+                                        }
+                                    }
+                                }
+                            })
+                            .fail(function(jqxhr, settings, exception) {
+                                analytics.log(exception);
+                                $(document).trigger('Analytics.tealiumError', exception);
+                            });
+                        }
+                        else {
+                            analytics.settings.utag_view_prevented = false;
+                            analytics.log('Analytics: Tealium already loaded.. \n\nWarning: Possibly unable to modify utag_data object before utag.view() \nRemove other instances of tealium. \n');
+                            analytics.tools.wait_for_tags().then(function(response) {
+                                $(document).trigger('Analytics.tealiumReady', analytics);
+                                if (!analytics.settings.manual_view) { analytics.tealium.view(utag_data); }
+                            }, function(error) {
+                                analytics.log('Analytics: Tealium tag loader timed out.');
+                                $(document).trigger('Analytics.tealiumError', 'Tealium: Tealium tag loader timed out.');
+                            });
+                        }
+                    });
                 });
                 //Initialize plugins
                 analytics.plugins.init();
@@ -310,18 +435,21 @@ window.utag_data = default_utag_data;
             },
             tealium: {
                 view: function(data) {
+                    /*
+                    View is now prevented on hook.
                     if (!analytics.settings.utag_view_prevented && !analytics.settings.allow_double_fire) {
                         analytics.log('Analytics: Possible duplicate utag.view() prevented.');
                         analytics.settings.view_complete = false;
                         return false;
-                    }
+                    }*/
                     analytics.tealium.set_default_data(data);
                     Object.keys(data).forEach((key) => (data[key] == null || data[key] == '') && delete data[key]);
                     data = analytics.tools.clean_object(data);
 
+                    $(document).trigger('Analytics.beforeView', data);
                     utag.view(data, function() {
-                        analytics.log('Analytics: Tealium view complete!');
                         analytics.settings.view_complete = true;
+                        $(document).trigger('Analytics.viewComplete', data);
                     });
                 },
                 link: function() {
@@ -393,13 +521,14 @@ window.utag_data = default_utag_data;
                         day_of_month: utag_data.day_of_month || date.getDate(),
                         timestamp: utag_data.timestamp || date.toString(),
                         url: utag_data['dom.url'] || document.location.href,
-                        user_type: utag_data.user_type ||  analytics.tools.get_cookie("new_customer_type") ||  'unknown',
+                        user_type: utag_data.user_type ||  analytics.tools.get_storage("new_customer_type") ||  'unknown',
                         page_section: utag_data.page_section || ((analytics.settings.path.length == 1) && (analytics.settings.path[0] == 'store')) ? 'homepage' : analytics.settings.path[0],
                         eoid: utag_data.eoid || analytics.tools.get_url_param('eoId'),
                         taxonomy_level: utag_data.taxonomy_level || analytics.settings.depth.toString(),
                         user_login_state: utag_data.user_login_state || analytics.tools.get_cookie("hasLoggedIn") || 'logged-out',
                         home_postal_code: utag_data.home_postal_code || analytics.settings.user_info.postal_code,
                         province: utag_data.province || analytics.settings.user_info.province,
+                        platform: utag_data.platform || analytics.tools.device().device,
 
                         //Additional data
                         visitor_postal_code: analytics.settings.user_info.postal_code,
@@ -416,32 +545,33 @@ window.utag_data = default_utag_data;
                     });
                     if (!ignore_cart) {
                         if (analytics.settings.is_checkout) {
-                            data.form_name = utag_data.form_name || analytics.settings.checkout_type;
-                            data.form_step = utag_data.form_step || 'cart start';
-                            data['event_name:lead form load'] = 'trigger';
+                            data.lead_form_name = analytics.settings.lead_form_name || utag_data.lead_form_name;
+                            data.form_name = analytics.settings.form_name || utag_data.form_name || analytics.settings.checkout_type;
+                            data.page_section = 'cart';
                         }
 
                         if (analytics.settings.is_form_step) {
+                            if (typeof(analytics.settings.cart_events) !== 'undefined' && analytics.settings.cart_events.length > 0) {
+                                analytics.settings.cart_events.forEach(function(value) {
+                                    data['event_name:' +value] = 'trigger';
+                                });
+                            }
                             if ((/^cart start/i).test(analytics.settings.form_step)) {
                                 data['event_name:scOpenAction'] = 'trigger';
-
-                                if (analytics.settings.has_products) {
-                                    data['event_name:scAddAction'] = 'trigger';
-                                }
                             }
 
-                            data.form_step = utag_data.form_step || analytics.settings.form_step;
+                            data.form_step = analytics.settings.form_step;
                             data['event_name:form_step'] = 'trigger';
+                            data.page_name = analytics.settings.pagename;
                         }
-
 
                         if (analytics.settings.has_products && analytics.settings.is_thanks) {
                             delete data['event_name:scOpenAction'];
                             delete data['event_name:scRemoveAction'];
                             delete data['event_name:scAddAction'];
 
-                            data.form_name = utag_data.form_name || analytics.settings.checkout_type;
-                            data.form_step = utag_data.form_step || 'Thankyou';
+                            data.form_name = analytics.settings.form_name;
+                            data.form_step = analytics.settings.form_step || 'Thankyou';
                             data['event_name:lead submit'] = 'trigger';
                             data.order_currency = 'CAD';
 
@@ -545,9 +675,32 @@ window.utag_data = default_utag_data;
                 }
             },
             tools: {
+                before: function(object, method, fn) {
+                    var originalMethod = object[method];
+                    object[method] = function () {
+                        analytics.settings.before_arguments = arguments;
+                        fn.apply(object);
+                        originalMethod.apply(object, arguments);
+                    };
+                },
+                after: function(object, method, fn) {
+                    var originalMethod = object[method];
+                    object[method] = function () {
+                        analytics.settings.after_arguments = arguments;
+                        originalMethod.apply(object, arguments);
+                        fn.call(object);
+                    };
+                },
+
                 env: function() {
-                    var h = document.location.hostname;
-                    return (h.includes('dev') || h.includes('localhost') || h.includes('127.0.0.1')) ? 'dev' : (h.includes('pre') || h.includes('tst')) ? 'qa' : 'prod';
+                    var h = document.location.hostname,
+                        localenv = localStorage.getItem('tealium-env');
+
+                    if (localenv) { return localenv; }
+                    else {
+                        return (h.includes('dev') || h.includes('localhost') || h.includes('127.0.0.1')) ? 'dev' : (h.includes('pre') || h.includes('tst')) ? 'qa' : 'prod';
+                    }
+
                 },
                 server_env: function() {
                     var comments = $('*:not("iframe")').contents().filter(function(){ return this.nodeType == 8;});
@@ -568,7 +721,16 @@ window.utag_data = default_utag_data;
                     });
                 },
                 inject_script: function(src) {
-                    return $.getScript(src);
+                    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+                    $.script = function(src, options) {
+                        options = $.extend(options || {}, {
+                          dataType: "script",
+                          cache: false,
+                          url: src
+                        });
+                        return $.ajax(options);
+                    };
+                    return $.script(src, options);
                 },
                 remap_events: function() {
                     var joined, remapped_events = [];
@@ -618,32 +780,41 @@ window.utag_data = default_utag_data;
                     else { return false; }
                 },
                 set_cookie: function(name, value) {
-                    document.cookie = name +'='+ value +'; Path=/;';
+                    document.cookie = name +'='+ value +';';
                 },
                 delete_cookie(name) {
-                    document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+                    document.cookie = name +'=;Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+                },
+                get_storage(name) {
+                    return localStorage.getItem(name);
+                },
+                set_storage(name, value) {
+                    return localStorage.setItem(name, value);
+                },
+                delete_storage(name) {
+                    return localStorage.removeItem(name);
                 },
                 wait_until_exists: function(selector, callback) {
                     if ($(selector).length) { callback(); }
                     else {
-                    setTimeout(function() {
-                        analytics.tools.wait_until_exists(selector, callback);
-                    }, 100);
+                        setTimeout(function() {
+                            analytics.tools.wait_until_exists(selector, callback);
+                        }, 100);
                     }
                 },
                 set_customer_cookie: function(type) {
-                    analytics.tools.set_cookie("new_customer_type", type);
+                    analytics.tools.set_storage("new_customer_type", type);
                     utag_data.user_type = type;
                     analytics.log('Analytics: Setting customer type: '+ type);
                 },
                 set_customer_type: function(selected){
                     switch(selected) {
-                        case 'notNewCustomer': case 'currentNoDrawer': case 'currentNo': case 'existingCust_no':
+                        case 'new': case 'notNewCustomer': case 'currentNoDrawer': case 'currentNo': case 'existingCust_no':
                         case 'modal_currentNo': case 'drawer_currentNo':
                             analytics.tools.set_customer_cookie('new');
                             analytics.settings.user_type = 'new';
                         break;
-                        case 'newCustomer': case 'currentYesDrawer': case 'currentYes': case 'existingCust_yes': case 'installDateTime': case 'noInstallDateTime':
+                        case 'existing': case 'newCustomer': case 'currentYesDrawer': case 'currentYes': case 'existingCust_yes': case 'installDateTime': case 'noInstallDateTime':
                         case 'modal_currentYes': case 'drawer_currentYes':
                             analytics.tools.set_customer_cookie('existing');
                             analytics.settings.user_type = 'existing';
@@ -652,17 +823,24 @@ window.utag_data = default_utag_data;
                     return true;
                 },
                 get_location: function() {
-                    var user_cookie = analytics.tools.get_cookie('location').split("!"), location = [];
-                    user_cookie.forEach(function(e){
-                        location.push(e.replace(/^\{|\}$/g,""));
-                    });
-                    analytics.settings.user_location = location;
-                    return location;
+                    try {
+                        var user_cookie = analytics.tools.get_cookie('location').split("!"), location = [];
+                        user_cookie.forEach(function(e){
+                            location.push(e.replace(/^\{|\}$/g,""));
+                        });
+                        analytics.settings.user_location = location;
+                        return location;
+                    }
+                    catch(e) {
+                        analytics.log('Analytics: Unable to determine location using cookies.', e);
+                    }
                 },
                 get_language: function() {
                     return analytics.settings.path[0].includes('english') ? 'en' : analytics.settings.path[0].includes('francais') ? 'fr' : (navigator.language.substring(0,2) || navigator.userLanguage.substring(0,2));
                 },
                 get_pagename: function pagename() {
+                    if (analytics.settings.pagename) { return analytics.settings.pagename; }
+
                     if (utag_data.hasOwnProperty('page_name') && utag_data.page_name !== '') {
                         if (utag_data.page_name.includes('|')) {
                             return utag_data.page_name.split('|').filter(String).join('|');
@@ -676,7 +854,10 @@ window.utag_data = default_utag_data;
                         if (pagename.includes('|')) {
                             return pagename.split('|').filter(String).join('|');
                         }
-                        return pagename
+                        return pagename;
+                    }
+                    else if (analytics.settings.path) {
+                        return analytics.settings.path.join('|');
                     }
                     else {
                         return 'pagename-not-set-in-content';
@@ -687,6 +868,125 @@ window.utag_data = default_utag_data;
 
                     if (typeof(utag_data.home_postal_code) !== 'undefined' && utag_data.home_postal_code.length <= 7) {
                         utag_data.home_postal_code = sha256(utag_data.home_postal_code);
+                    }
+                },
+                count_object: function (store, level, obj) {
+                    if (typeof(obj) !== 'object') { return; }
+                    var keys = Object.keys(obj), count = keys.length;
+                    store[level] = (store[level] || 0) + count;
+                    for (var i = 0; i < count; i++) {
+                        var child_obj = obj[keys[i]];
+                        if (typeof child_obj === 'object') {
+                            analytics.tools.count_object(store, level + 1, child_obj);
+                        }
+                    }
+                },
+                object_total: function(object) {
+                    if (typeof(object) !== 'object') { return; }
+                    var result = {}, count = 0;
+                    analytics.tools.count_object(result, 0, object);
+                    Object.keys(result).forEach(function(k,v) { count += result[k]; });
+                    return count;
+                },
+                wait: function() {
+                    return new Promise(function(resolve, reject) {
+                        if (analytics.settings.wait) {
+                            analytics.log('Analytics: Waiting to load - ', analytics.settings.wait);
+                            setTimeout(function() {
+                                resolve();
+                            },analytics.settings.wait);
+                        }
+                        else {
+                            resolve();
+                        }
+                    });
+                },
+                wait_for_utag: function() {
+                    return new Promise(function(resolve, reject) {
+                        if (typeof(utag) !== 'undefined' && utag.hasOwnProperty('view') && utag.hasOwnProperty('link')) {
+                            analytics.log('Analytics: Tealium function library ready!');
+                            resolve();
+                        }
+                        else {
+                            var cnt = 0, utag_wait = setInterval(function() {
+                                cnt++;
+                                if (cnt <= 2000) {
+                                    if (typeof(utag) !== 'undefined' && utag.hasOwnProperty('view') && utag.hasOwnProperty('link')) {
+                                        clearInterval(utag_wait);
+                                        analytics.log('Analytics: Tealium function library ready!');
+                                        resolve();
+                                    }
+                                }
+                                else {
+                                    clearInterval(utag_wait);
+                                    reject('Analytics: Waiting for utag timed out...');
+                                }
+                            },100);
+                        }
+                    });
+                },
+                wait_for_tags: function() {
+                    return new Promise(function(resolve, reject) {
+                        if (analytics.settings.wait_for_all_tags) {
+                            analytics.log('Analytics: Waiting for tealium tag loader to finish...');
+                            if (typeof(utag) !== 'undefined' && utag.hasOwnProperty('loader') && utag.loader.hasOwnProperty('ended')) {
+                                analytics.log('Analytics: Tag loader finished, resolving promise.');
+                                resolve();
+                            }
+                            else {
+                                var cnt = 0,
+                                tag_wait = setInterval(function() {
+                                    cnt++;
+                                    if (cnt <= 2000) {
+                                        if (typeof(utag) !== 'undefined' && utag.hasOwnProperty('loader') && utag.loader.hasOwnProperty('ended')) {
+                                            if (utag.loader.ended == 1) {
+                                                clearInterval(tag_wait);
+                                                analytics.log('Analytics: Tag loader finished, resolving promise.');
+                                                resolve();
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        clearInterval(tag_wait);
+                                        reject('Analytics: Waiting for tags timed out...');
+                                    }
+
+                                },100);
+                            }
+                        }
+                        else {
+                            resolve();
+                        }
+                    });
+                },
+                device: function() {
+                    try {
+                        var ua = navigator.userAgent.toLowerCase(),
+                        detect = (function(s) {
+                            if(s === undefined) { s = ua; } else { ua = s.toLowerCase(); }
+                            if(/(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(ua)) {
+                                return 'tablet';
+                            }
+                            else {
+                                if(/(mobi|ipod|phone|blackberry|opera mini|fennec|minimo|symbian|psp|nintendo ds|archos|skyfire|puffin|blazer|bolt|gobrowser|iris|maemo|semc|teashark|uzard)/.test(ua)) {
+                                    return 'phone';
+                                }
+                                else {
+                                    return 'desktop';
+                                }
+                            }
+                        });
+                        var r = {
+                            device:detect(),
+                            detect:detect,
+                            isMobile: (detect() !== 'desktop'),
+                            userAgent:ua
+                        };
+                        analytics.settings.device = r;
+                        return r;
+                    }
+                    catch (e) {
+                        analytics.log('Analytics: Unable to detect device platform. \n', e);
                     }
                 }
             },
@@ -741,13 +1041,11 @@ window.utag_data = default_utag_data;
                             analytics.settings.product_string.product_name.push(o.product_name);
                             analytics.settings.product_string.product_type.push(o.product_type);
                             analytics.settings.product_string.product_category.push(o.product_type);
-
                             analytics.settings.product_string.product_regular_price.push(o.product_regular_price);
                             analytics.settings.product_string.product_monthly_charge_less_discount.push(o.product_monthly_charge_less_discount);
                             analytics.settings.product_string.product_recurring_discount.push(o.product_recurring_discount);
                             analytics.settings.product_string.product_sale_price.push(o.product_sale_price);
                             analytics.settings.product_string.product_offer_discount.push(o.product_offer_discount);
-
                             analytics.settings.product_string.product_order_type.push(o.product_order_type);
                                 if (o.product_order_type.includes('cross')) { analytics.settings.product_string.product_xsell.push(o.product_order_type); }
                                 if (o.product_order_type.includes('upsell')) { analytics.settings.product_string.product_upsell.push(o.product_order_type); }
@@ -756,11 +1054,10 @@ window.utag_data = default_utag_data;
                                 analytics.settings.product_string.equipment_purchase_type.push(o.product_name);
                             }
                             //Only new customers get an RGU.
-                            if (analytics.tools.get_cookie("new_customer_type") == 'existing') { o.product_rgu = '0'; }
-                            analytics.settings.product_string.product_rgu.push(o.product_rgu);
-
+                            if (analytics.tools.get_storage("new_customer_type") !== 'existing') {
+                                analytics.settings.product_string.product_rgu.push(o.product_rgu);
+                            }
                             analytics.settings.product_string.product_contract.push(o.product_contract);
-
                             (has_themepack) && analytics.cart.add_product(o.themepack, true);
                         });
                 },
@@ -771,8 +1068,13 @@ window.utag_data = default_utag_data;
                         analytics.settings.has_products = (Object.keys(analytics.settings.stored_products).length > 0 || Object.keys(analytics.settings.product_string).length > 0);
 
                         $.extend(utag_data, analytics.settings.stored_products);
+                        var billing_type = sessionStorage.getItem('billing_type');
+
+                        if (billing_type !== '') { utag_data.billing_type = billing_type; }
+
                         callback(analytics.settings.stored_products);
                         sessionStorage.removeItem('products');
+                        sessionStorage.removeItem('billing_type');
                         return false;
                     }
                     else if (analytics.settings.is_checkout) {
@@ -780,6 +1082,11 @@ window.utag_data = default_utag_data;
                             analytics.settings.cart = (analytics.settings.checkout_type == 'bluesky') ? json : (analytics.settings.checkout_type == 'leadform' || analytics.settings.checkout_type == 'student') ? json.lead : json.cart;
                             analytics.log(analytics.settings.cart);
                             $(analytics.settings.cart).each(function(i,o) {
+                                if (o.hasOwnProperty('billMedium')) {
+                                    sessionStorage.setItem('billing_type', o.billMedium);
+                                    utag_data.billing_type = o.billMedium;
+                                }
+
                                 if (analytics.settings.checkout_type == 'bluesky') {
                                     var item = o;
                                     if (item.hasOwnProperty('product')) { analytics.cart.add_product(item.product); }
@@ -847,7 +1154,7 @@ window.utag_data = default_utag_data;
                     delete utag_data["event_name:scAddAction"]; //Remove scAdd
                     delete utag_data["event_name:scRemoveAction"]; //Remove scRemove
                     delete utag_data["event_name:form_step"]; //Remove event26
-                    delete utag_data.form_step; //Remove evar15
+                    //delete utag_data.form_step; //Remove evar15
                 },
                 update_products: function(cart) {
                     analytics.settings.cart = cart;
@@ -876,7 +1183,6 @@ window.utag_data = default_utag_data;
                             if (item.hasOwnProperty("addOns")) { analytics.cart.add_product(item.addOns); }
                             if (item.hasOwnProperty("portal")) { analytics.cart.add_product(item.portal); }
                         }
-
                     });
 
                     analytics.settings.stored_products = analytics.settings.product_string;
@@ -891,9 +1197,16 @@ window.utag_data = default_utag_data;
                 }
             }
         };
-        window.analytics = analytics;
-        SHAW.Analytics = analytics;
-        analytics.init();
+
+        try {
+            window.analytics = analytics;
+            SHAW.Analytics = analytics;
+            analytics.init();
+        }
+        catch (e) {
+            console.log(e);
+        }
+
 
         $(document).on('click', '*[data-event]:not([data-trk=false])', function(e){
             try {
@@ -926,7 +1239,38 @@ window.utag_data = default_utag_data;
         $(document).on('change ifChecked', 'input[type="radio"]', function(e) {
             analytics.tools.set_customer_type($(this).attr('id'));
         });
+        $(document).on('click', '.modal_check:not(".disabled"), .region_drawer_check:not(".disabled")', function(e) {
+            var parent_form = $(this).closest('form');
+            var form_data = $(parent_form).serializeArray().reduce(function(obj, item) {
+                obj[item.name] = item.value;
+                return obj;
+            }, {});
+            var customer_type = form_data.current_customer;
 
+            if (customer_type == 'new' || customer_type == 'existing') {
+                analytics.tools.set_customer_type(customer_type);
+            }
+        });
+
+        //Prevent duplicate views on the utag.view function
+        analytics.tools.wait_for_utag().then(function() {
+            analytics.tools.after(utag, 'view', function() {
+                analytics.settings.view_complete = true;
+                if (analytics.settings.debug && typeof(console) !== 'undefined') {
+                    console.groupCollapsed('Analytics: utag.view intercept - View Complete.');
+                        console.table(analytics.settings.after_arguments[0]);
+                    console.groupEnd();
+                }
+            });
+            analytics.tools.before(utag, 'view', function() {
+                if (analytics.settings.view_complete && !analytics.settings.allow_double_fire) {
+                    var e = 'Analytics: utag.view intercept - Preventing duplicate view!';
+                    analytics.log(e);
+                    analytics.log('%c################## WARNING ##################\n', 'background: #B22222; color: #fff', 'Duplicate views are depreciated - This will stop working soon!', '\n################## /WARNING ##################');
+                    //throw new Error(e);
+                }
+            });
+        });
 
         //Shaw Callback functions
         window.shc = {
@@ -946,28 +1290,11 @@ window.utag_data = default_utag_data;
 
         window.bSPS = function(){
             analytics.log('Analytics: bSPS EVENT');
-            analytics.cart.clear_cart_events();
-
-            function count_object(store, level, obj) {
-                var keys = Object.keys(obj), count = keys.length;
-                store[level] = (store[level] || 0) + count;
-                for (var i = 0; i < count; i++) {
-                    var child_obj = obj[keys[i]];
-                    if (typeof child_obj === 'object') {
-                        count_object(store, level + 1, child_obj);
-                    }
-                }
-            }
-            function object_total(object) {
-                var result = {}, count = 0;
-                count_object(result, 0, object);
-                Object.keys(result).forEach(function(k,v) { count += result[k]; });
-                return count;
-            }
-            var cart_count = object_total(analytics.settings.cart);
             if (analytics.settings.bsps > 0) {
+                var cart_count = analytics.tools.object_total(analytics.settings.cart);
+                analytics.cart.clear_cart_events();
                 analytics.cart.get_json(analytics.settings.product_json_url).done(function(json) {
-                    var json_count = object_total(json);
+                    var json_count = analytics.tools.object_total(json);
                     if (cart_count > json_count) {
                         utag_data["event_name:scRemoveAction"] = 'trigger';
                         analytics.log('Analytics: Item(s) Removed!');
@@ -988,6 +1315,9 @@ window.utag_data = default_utag_data;
                     }
                 });
             }
+            else {
+                analytics.log('Analytics: Ignoring first bsps event');
+            }
             analytics.settings.bsps++;
             analytics.settings.prevent_link = false;
         };
@@ -998,9 +1328,10 @@ window.utag_data = default_utag_data;
 /**
  * User integration events
  */
+
 $(document).on('Analytics.trackingComplete', function(event, results) {
     analytics.log('Tracking Complete for event: '+results.settings.event);
-    analytics.log(results);
+    //analytics.log(results);
 });
 $(document).on('Analytics.formError', function(event, errors) {
     analytics.log('Form Error');
@@ -1023,4 +1354,164 @@ $(document).on('Analytics.tealiumReady', function(event, analytics) {
     *   analytics.settings.manual_view = true;
     *   Then fire analytics.tealium.view(utag_data); when you're ready.
     */
+});
+
+$(document).on('Analytics.beforeView', function(event, data) {
+    analytics.log('Analytics: Before Tealium View.');
+});
+
+$(document).on('Analytics.viewComplete', function(event, data) {
+    analytics.log('Analytics: Tealium View Complete!');
+});
+
+
+/* QA Tools */
+$(document).on('Analytics.viewComplete', function(event, data) {
+    if (analytics.settings.debug && typeof(console) !== 'undefined') {
+        var badges = {
+            '30': 'Fan',
+            '12549': 'Bundle Fan',
+            '21262': 'Double Player',
+            '12535': 'Existing Customer',
+            '14592': 'High Lead Score',
+            '12547': 'Internet Fan',
+            '12553': 'Phone Fan',
+            '21260': 'Single Player',
+            '66103': 'Switch Offer - No Holdback',
+            '21264': 'Triple Player',
+            '12551': 'TV Fan',
+            '12537': 'Visitor - Desktop',
+            '12557': 'Multiple Product Fan',
+        },
+        flags = {
+            '27': 'Returning Visitor',
+            '10736': 'Has Logged In',
+            '12533': 'Is Shaw Customer',
+            '12539': 'Is Internet Fan',
+            '12541': 'Is Bundle Fan',
+            '12543': 'Is TV Fan',
+            '12545': 'Is Phone Fan',
+            '64019': 'Is HLS Holdback',
+            '64021': 'Is Switch Holdback',
+            '64025': 'HLS Bundle - No Holdback',
+            '64023': 'HLS Internet - No Holdback',
+            '12555': 'Is Multiple Product Fan',
+            '18354': 'Has Converted From Lead Form',
+            '21254': 'Is Single Player',
+            '21256': 'Is Double Player',
+            '21258': 'Is Triple Player',
+            '28969': 'Has Converted From Lead Form - TiQ'
+        },
+        active_badges = [], active_flags = [], active_audience = [];
+
+        Object.keys(utag.data).forEach(function(key) {
+            if (key.includes('va.badge')) {
+                var badge_id = key.split('.').slice(-1)[0];
+                if (badges.hasOwnProperty(badge_id) && utag_data[key] == 'true') {
+                    var b = {
+                        'badge_id': badge_id,
+                        'name': badges[badge_id]
+                    };
+                    active_badges.push(b);
+                }
+                else if (utag_data[key] == 'true') {
+                    var b = {
+                        'badge_id': key,
+                        'name': 'unknown'
+                    };
+                    active_badges.push(b);
+                }
+            }
+            if (key.includes('va.audiences')) {
+                active_audience.push(utag_data[key]);
+            }
+            if (key.includes('va.flags')) {
+                var flag_id = key.split('.').slice(-1)[0];
+                if (flags.hasOwnProperty(flag_id) && utag_data[key] == 'true') {
+                    var f = {
+                        'flag_id': flag_id,
+                        'name': flags[flag_id]
+                    };
+                    active_flags.push(f);
+                }
+                else if (utag_data[key] == 'true') {
+                    var f = {
+                        'flag_id': key,
+                        'name': 'unknown'
+                    };
+                    active_flags.push(f);
+                }
+            }
+        });
+
+        console.groupCollapsed('##################    Data Validation    ##################');
+
+        console.groupCollapsed('Page Data:');
+            console.log('page_name:', data.page_name);
+            console.log('user_type:', data.user_type);
+            if (data.hasOwnProperty('optimizely')) {
+                console.groupCollapsed('optimizely:', data.optimizely)
+                console.log(optimizely.get('state').getCampaignStates({"isActive": true}));
+                console.groupEnd();
+            }
+            var section_group = {
+                'page_section': data.page_section,
+                'page_section_l2': data.page_section_l2,
+                'page_section_l3': data.page_section_l3,
+                'page_section_l4': data.page_section_l4,
+                'page_section_l5': data.page_section_l5
+            };
+            console.group('Page Section:');
+                console.table(section_group);
+            console.groupEnd();
+        console.groupEnd();
+
+        console.groupCollapsed('Cookies:');
+            var o = {
+                'location': analytics.tools.get_cookie('location'),
+                'bundle-offer': analytics.tools.get_cookie('bundle-offer'),
+                'audience 1': analytics.tools.get_cookie('audience 1'),
+                'do_hls_holdback': analytics.tools.get_cookie('do_hls_holdback'),
+                'service': analytics.tools.get_cookie('service'),
+                'new_customer_type': analytics.tools.get_cookie('new_customer_type'),
+            };
+            console.table(o);
+        console.groupEnd();
+
+
+        console.groupCollapsed('Audience Stream:');
+            if (utag.data.hasOwnProperty('va.metrics.12565')) {
+                console.log('lead_score:', utag_data['va.metrics.12565']);
+            }
+            if (active_badges.length > 0) {
+                console.group('Badges:');
+                    console.table(active_badges);
+                console.groupEnd();
+            }
+            if (active_flags.length > 0) {
+                console.group('Flags:');
+                    console.table(active_flags);
+                console.groupEnd();
+            }
+            if (Object.keys(active_audience).length > 0) {
+                console.group('Audiences:');
+                    console.table(active_audience);
+                console.groupEnd();
+            }
+        console.groupEnd();
+
+        if (analytics.settings.is_checkout) {
+            console.groupCollapsed('Checkout Data:');
+            console.log('form_name:', data.form_name);
+            console.log('form_step:', data.form_step);
+            console.log('lead_form_name:', data.lead_form_name);
+            if (analytics.settings.has_products) {
+                console.groupCollapsed('Products:');
+                console.table(analytics.settings.product_string);
+                console.groupEnd();
+            }
+            console.groupEnd();
+        }
+        console.groupEnd();
+    }
 });
