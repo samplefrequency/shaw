@@ -1,6 +1,6 @@
 /**
  * @author Mike Barkemeyer <mike.barkemeyer@sjrb.ca>
- * @version 1.1
+ * @version 1.1.3 <May 9, 2018>
  * @requires jQuery
  * @namespace analytics
  * @extends SHAW
@@ -42,7 +42,6 @@
 /* **************** TEALIUM OVERRIDES ************************* */
 window.tracking_obj_ready = false;
 setInterval(function(){window.clickTrackEvent = false;},100);
-
 window.utag_cfg_ovrd = {noview:true};
 /* **************** END TEALIUM OVERRIDES ************************* */
 
@@ -59,7 +58,8 @@ window.utag_cfg_ovrd = {noview:true};
 !function(){"use strict";function t(t,i){i?(p[0]=p[16]=p[1]=p[2]=p[3]=p[4]=p[5]=p[6]=p[7]=p[8]=p[9]=p[10]=p[11]=p[12]=p[13]=p[14]=p[15]=0,this.blocks=p):this.blocks=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],t?(this.h0=3238371032,this.h1=914150663,this.h2=812702999,this.h3=4144912697,this.h4=4290775857,this.h5=1750603025,this.h6=1694076839,this.h7=3204075428):(this.h0=1779033703,this.h1=3144134277,this.h2=1013904242,this.h3=2773480762,this.h4=1359893119,this.h5=2600822924,this.h6=528734635,this.h7=1541459225),this.block=this.start=this.bytes=0,this.finalized=this.hashed=!1,this.first=!0,this.is224=t}function i(i,r,e){var n="string"!=typeof i;if(n){if(null===i||void 0===i)throw h;i.constructor===s.ArrayBuffer&&(i=new Uint8Array(i))}var o=i.length;if(n){if("number"!=typeof o||!Array.isArray(i)&&(!a||!ArrayBuffer.isView(i)))throw h}else{for(var f,u=[],o=i.length,c=0,y=0;o>y;++y)f=i.charCodeAt(y),128>f?u[c++]=f:2048>f?(u[c++]=192|f>>6,u[c++]=128|63&f):55296>f||f>=57344?(u[c++]=224|f>>12,u[c++]=128|f>>6&63,u[c++]=128|63&f):(f=65536+((1023&f)<<10|1023&i.charCodeAt(++y)),u[c++]=240|f>>18,u[c++]=128|f>>12&63,u[c++]=128|f>>6&63,u[c++]=128|63&f);i=u}i.length>64&&(i=new t(r,!0).update(i).array());for(var p=[],l=[],y=0;64>y;++y){var d=i[y]||0;p[y]=92^d,l[y]=54^d}t.call(this,r,e),this.update(l),this.oKeyPad=p,this.inner=!0,this.sharedMemory=e}var h="input is invalid type",s="object"==typeof window?window:{},r=!s.JS_SHA256_NO_NODE_JS&&"object"==typeof process&&process.versions&&process.versions.node;r&&(s=global);var e=!s.JS_SHA256_NO_COMMON_JS&&"object"==typeof module&&module.exports,n="function"==typeof define&&define.amd,a="undefined"!=typeof ArrayBuffer,o="0123456789abcdef".split(""),f=[-2147483648,8388608,32768,128],u=[24,16,8,0],c=[1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298],y=["hex","array","digest","arrayBuffer"],p=[];(s.JS_SHA256_NO_NODE_JS||!Array.isArray)&&(Array.isArray=function(t){return"[object Array]"===Object.prototype.toString.call(t)});var l=function(i,h){return function(s){return new t(h,!0).update(s)[i]()}},d=function(i){var h=l("hex",i);r&&(h=v(h,i)),h.create=function(){return new t(i)},h.update=function(t){return h.create().update(t)};for(var s=0;s<y.length;++s){var e=y[s];h[e]=l(e,i)}return h},v=function(t,i){var s=require("crypto"),r=require("buffer").Buffer,e=i?"sha224":"sha256",n=function(i){if("string"==typeof i)return s.createHash(e).update(i,"utf8").digest("hex");if(null===i||void 0===i)throw h;return i.constructor===ArrayBuffer&&(i=new Uint8Array(i)),Array.isArray(i)||ArrayBuffer.isView(i)||i.constructor===r?s.createHash(e).update(new r(i)).digest("hex"):t(i)};return n},A=function(t,h){return function(s,r){return new i(s,h,!0).update(r)[t]()}},w=function(t){var h=A("hex",t);h.create=function(h){return new i(h,t)},h.update=function(t,i){return h.create(t).update(i)};for(var s=0;s<y.length;++s){var r=y[s];h[r]=A(r,t)}return h};t.prototype.update=function(t){if(!this.finalized){var i="string"!=typeof t;if(i){if(null===t||void 0===t)throw h;t.constructor===s.ArrayBuffer&&(t=new Uint8Array(t))}var r=t.length;if(!(!i||"number"==typeof r&&(Array.isArray(t)||a&&ArrayBuffer.isView(t))))throw h;for(var e,n,o=0,f=this.blocks;r>o;){if(this.hashed&&(this.hashed=!1,f[0]=this.block,f[16]=f[1]=f[2]=f[3]=f[4]=f[5]=f[6]=f[7]=f[8]=f[9]=f[10]=f[11]=f[12]=f[13]=f[14]=f[15]=0),i)for(n=this.start;r>o&&64>n;++o)f[n>>2]|=t[o]<<u[3&n++];else for(n=this.start;r>o&&64>n;++o)e=t.charCodeAt(o),128>e?f[n>>2]|=e<<u[3&n++]:2048>e?(f[n>>2]|=(192|e>>6)<<u[3&n++],f[n>>2]|=(128|63&e)<<u[3&n++]):55296>e||e>=57344?(f[n>>2]|=(224|e>>12)<<u[3&n++],f[n>>2]|=(128|e>>6&63)<<u[3&n++],f[n>>2]|=(128|63&e)<<u[3&n++]):(e=65536+((1023&e)<<10|1023&t.charCodeAt(++o)),f[n>>2]|=(240|e>>18)<<u[3&n++],f[n>>2]|=(128|e>>12&63)<<u[3&n++],f[n>>2]|=(128|e>>6&63)<<u[3&n++],f[n>>2]|=(128|63&e)<<u[3&n++]);this.lastByteIndex=n,this.bytes+=n-this.start,n>=64?(this.block=f[16],this.start=n-64,this.hash(),this.hashed=!0):this.start=n}return this}},t.prototype.finalize=function(){if(!this.finalized){this.finalized=!0;var t=this.blocks,i=this.lastByteIndex;t[16]=this.block,t[i>>2]|=f[3&i],this.block=t[16],i>=56&&(this.hashed||this.hash(),t[0]=this.block,t[16]=t[1]=t[2]=t[3]=t[4]=t[5]=t[6]=t[7]=t[8]=t[9]=t[10]=t[11]=t[12]=t[13]=t[14]=t[15]=0),t[15]=this.bytes<<3,this.hash()}},t.prototype.hash=function(){var t,i,h,s,r,e,n,a,o,f,u,y=this.h0,p=this.h1,l=this.h2,d=this.h3,v=this.h4,A=this.h5,w=this.h6,b=this.h7,g=this.blocks;for(t=16;64>t;++t)r=g[t-15],i=(r>>>7|r<<25)^(r>>>18|r<<14)^r>>>3,r=g[t-2],h=(r>>>17|r<<15)^(r>>>19|r<<13)^r>>>10,g[t]=g[t-16]+i+g[t-7]+h<<0;for(u=p&l,t=0;64>t;t+=4)this.first?(this.is224?(a=300032,r=g[0]-1413257819,b=r-150054599<<0,d=r+24177077<<0):(a=704751109,r=g[0]-210244248,b=r-1521486534<<0,d=r+143694565<<0),this.first=!1):(i=(y>>>2|y<<30)^(y>>>13|y<<19)^(y>>>22|y<<10),h=(v>>>6|v<<26)^(v>>>11|v<<21)^(v>>>25|v<<7),a=y&p,s=a^y&l^u,n=v&A^~v&w,r=b+h+n+c[t]+g[t],e=i+s,b=d+r<<0,d=r+e<<0),i=(d>>>2|d<<30)^(d>>>13|d<<19)^(d>>>22|d<<10),h=(b>>>6|b<<26)^(b>>>11|b<<21)^(b>>>25|b<<7),o=d&y,s=o^d&p^a,n=b&v^~b&A,r=w+h+n+c[t+1]+g[t+1],e=i+s,w=l+r<<0,l=r+e<<0,i=(l>>>2|l<<30)^(l>>>13|l<<19)^(l>>>22|l<<10),h=(w>>>6|w<<26)^(w>>>11|w<<21)^(w>>>25|w<<7),f=l&d,s=f^l&y^o,n=w&b^~w&v,r=A+h+n+c[t+2]+g[t+2],e=i+s,A=p+r<<0,p=r+e<<0,i=(p>>>2|p<<30)^(p>>>13|p<<19)^(p>>>22|p<<10),h=(A>>>6|A<<26)^(A>>>11|A<<21)^(A>>>25|A<<7),u=p&l,s=u^p&d^f,n=A&w^~A&b,r=v+h+n+c[t+3]+g[t+3],e=i+s,v=y+r<<0,y=r+e<<0;this.h0=this.h0+y<<0,this.h1=this.h1+p<<0,this.h2=this.h2+l<<0,this.h3=this.h3+d<<0,this.h4=this.h4+v<<0,this.h5=this.h5+A<<0,this.h6=this.h6+w<<0,this.h7=this.h7+b<<0},t.prototype.hex=function(){this.finalize();var t=this.h0,i=this.h1,h=this.h2,s=this.h3,r=this.h4,e=this.h5,n=this.h6,a=this.h7,f=o[t>>28&15]+o[t>>24&15]+o[t>>20&15]+o[t>>16&15]+o[t>>12&15]+o[t>>8&15]+o[t>>4&15]+o[15&t]+o[i>>28&15]+o[i>>24&15]+o[i>>20&15]+o[i>>16&15]+o[i>>12&15]+o[i>>8&15]+o[i>>4&15]+o[15&i]+o[h>>28&15]+o[h>>24&15]+o[h>>20&15]+o[h>>16&15]+o[h>>12&15]+o[h>>8&15]+o[h>>4&15]+o[15&h]+o[s>>28&15]+o[s>>24&15]+o[s>>20&15]+o[s>>16&15]+o[s>>12&15]+o[s>>8&15]+o[s>>4&15]+o[15&s]+o[r>>28&15]+o[r>>24&15]+o[r>>20&15]+o[r>>16&15]+o[r>>12&15]+o[r>>8&15]+o[r>>4&15]+o[15&r]+o[e>>28&15]+o[e>>24&15]+o[e>>20&15]+o[e>>16&15]+o[e>>12&15]+o[e>>8&15]+o[e>>4&15]+o[15&e]+o[n>>28&15]+o[n>>24&15]+o[n>>20&15]+o[n>>16&15]+o[n>>12&15]+o[n>>8&15]+o[n>>4&15]+o[15&n];return this.is224||(f+=o[a>>28&15]+o[a>>24&15]+o[a>>20&15]+o[a>>16&15]+o[a>>12&15]+o[a>>8&15]+o[a>>4&15]+o[15&a]),f},t.prototype.toString=t.prototype.hex,t.prototype.digest=function(){this.finalize();var t=this.h0,i=this.h1,h=this.h2,s=this.h3,r=this.h4,e=this.h5,n=this.h6,a=this.h7,o=[t>>24&255,t>>16&255,t>>8&255,255&t,i>>24&255,i>>16&255,i>>8&255,255&i,h>>24&255,h>>16&255,h>>8&255,255&h,s>>24&255,s>>16&255,s>>8&255,255&s,r>>24&255,r>>16&255,r>>8&255,255&r,e>>24&255,e>>16&255,e>>8&255,255&e,n>>24&255,n>>16&255,n>>8&255,255&n];return this.is224||o.push(a>>24&255,a>>16&255,a>>8&255,255&a),o},t.prototype.array=t.prototype.digest,t.prototype.arrayBuffer=function(){this.finalize();var t=new ArrayBuffer(this.is224?28:32),i=new DataView(t);return i.setUint32(0,this.h0),i.setUint32(4,this.h1),i.setUint32(8,this.h2),i.setUint32(12,this.h3),i.setUint32(16,this.h4),i.setUint32(20,this.h5),i.setUint32(24,this.h6),this.is224||i.setUint32(28,this.h7),t},i.prototype=new t,i.prototype.finalize=function(){if(t.prototype.finalize.call(this),this.inner){this.inner=!1;var i=this.array();t.call(this,this.is224,this.sharedMemory),this.update(this.oKeyPad),this.update(i),t.prototype.finalize.call(this)}};var b=d();b.sha256=b,b.sha224=d(!0),b.sha256.hmac=w(),b.sha224.hmac=w(!0),e?module.exports=b:(s.sha256=b.sha256,s.sha224=b.sha224,n&&define(function(){return b}))}();
 /* **************** END SHA-256 Hashing Function ************************* */
 
-if (typeof(jQuery) == 'undefined') { throw new Error('Analytics Script & Tealium required jQuery.'); }
+if (typeof($) !== 'undefined' && typeof(jQuery) == 'undefined') { var jQuery = $; }
+if (typeof(jQuery) == 'undefined') { throw new Error('Analytics Script & Tealium required jQuery.' + "\n" + jQuery + "\n" + $); }
 var SHAW = window.SHAW || {};
 
 var default_utag_data = { page_name : "", page_section : "", referring_url : "", hour_of_day : "", site_name : "", user_agent_string : "", site_version : "", site_language : "", user_login_state : "", account_id : "", home_postal_code : "", platform : "", page_section_l2 : "", page_section_l3 : "", page_section_l4 : "", page_section_l5 : "", ab_testing_page_type : "", taxonomy_level : "", attribution_id : "", employee_id : "", content_template_name : "", user_type : "", purchase_id : "", equipment_purchase_type : "", account_info : "", account_products : "", serviceability_type : "", internal_search_type : "", error_code : "", ai_search_keyword : "", serviceability_details : "", number_search_results : "", lead_form_name : "", account_modified : "", shaw_id : "", cross_up_sell : "", shaw_id_category : "", install_method : "", request_id : "", survey_id : "", builder_type : "", site_error : "", upsell_revenue : "", xsell_revenue : "", rgus : "", one_time_charges : "", tv_channels : "", transaction_id : "", prod_view : "", email_optin : "", has_shaw_id : "", ad_complete : "", ad_start : "", buffer_complete : "", complete : "", video_load : "", link_name : "", navigation_click : "", navigationAction : "", page_load_flag : "", event_name : "", shaw_page_url : "", emailAction : "", socialAction : "", videoAction : "", addonAction : "", 'order_currency' : "", s_account : "", monthly_recurring_revenue : "", product_order_type : "", buffer_start : "", chapter_complete : "", chapter_start : "", video_pause : "", video_play : "", seek_complete : "", seek_start : "", video_unload : "", order_id : "", order_total : "", order_subtotal : "", order_shipping : "", order_tax : "", order_promo_code : "", customer_id : "", customer_city : "", customer_state : "", customer_zip : "", customer_country : "", product_id : "", product_name : "", product_brand : "", product_category : "", product_subcategory : "", product_quantity : "", product_regular_price : "", product_discount : "", marketing_cloud_id : "", eoid : "", serviceability_status : "", video_25 : "", video_50 : "", video_75 : "", file_downloads : "", o2_tag_sitename : "", o2_tag_page_value : "", product_type : "", product_offer_price : "", promo_flag : "", monthly_charge_regular_price : "", product_monthly_charge_less_discount : "", product_recurring_discount : "", offer_discount : "", service_lob : "", customer_type : "", lead_form_loads : "", install_method_revenue : "", twitter_event : "", twitter_value : "", timestamp : "", sc_events : "", internal_search_term : "", url : "", chat_id : "", internal_tracking_code : "", lead_form_action : "", product_offer_discount : "", content_engagement_type : "", video_view_segment : "", offer_position : "", genesis_clicktale : "", push_notification_status : "", service_agreement_flag : "", apple_pay_status : "", serviceability_postal_code : "", campaign_type : "", cid : "", lead_form_product_name : "", lead_form_product_type : "", province : "", rgus_event : "", product_rgu : "", product_upsell : "", product_xsell : "", partner_info : "", kenshoo_id : "", kenshoo_order_value : "", kenshoo_lob_count : "", product_sale_price : "", form_name : "", form_step : "", offer_id : "", product_contract : "", billing_postal_code : "", equipment_purchase_revenue : "", installation_charges : "", internal_promo_offer : "", internal_promo_position : "", internal_promo_impression : "", internal_promo_click : "", link_href : "", builderAction : "", seo_cities : "", seo_province : "", new_repeat : "", facebook_event_type : "", facebook_event_parameters_content_name : "", facebook_lead_event_parameter_name : "", facebook_registration_event_parameter_name : "", product_credit : "", equipment_regular_price : "", optimizely : "", 'dom.url': '', };
@@ -101,7 +101,7 @@ window.utag_data = default_utag_data;
                     {
                         profile: 'uts-shaw-consumer',
                         hostname: [
-                            'localhost', 'www.shaw.ca', 'shop.shaw.ca', 'shawca-dev.shaw.ca', 'shawca-tst1.shaw.ca', 'shawca-tst2.shaw.ca', 'shawca-tst3.shaw.ca', 'shawca-pre.shaw.ca', 'pre-web-shawca.shaw.ca', 'prd-web-shawca-05.dmz.ad', 'prd-web-shawca-06.dmz.ad', 'prd-web-shawca-07.dmz.ad', 'prd-web-shawca-08.dmz.ad'
+                            'localhost', 'www.shaw.ca', 'shop.shaw.ca', 'shaw.postclickmarketing.com', 'shawca-dev.shaw.ca', 'shawca-tst1.shaw.ca', 'shawca-tst2.shaw.ca', 'shawca-tst3.shaw.ca', 'shawca-pre.shaw.ca', 'pre-web-shawca.shaw.ca', 'prd-web-shawca-05.dmz.ad', 'prd-web-shawca-06.dmz.ad', 'prd-web-shawca-07.dmz.ad', 'prd-web-shawca-08.dmz.ad', 'shawecomm-dev.playpen.dsl.aws.shaw.ca', 'partnertest-ecommerce-discover-test-external.nonprod.dsl.aws.shaw.ca','partnerdev-ecommerce-discover-dev-external.playpen.dsl.aws.shaw.ca', 'beta.shaw.ca'
                         ]
                     },
                     {
@@ -136,7 +136,7 @@ window.utag_data = default_utag_data;
                     builder: {
                         form_steps: [
                             {
-                                url: ['/store/builder/builder.jsp','/store/builder/addOnsBuilder.jsp'],
+                                url: '/store/builder/builder.jsp',
                                 label: 'Cart Start',
                                 events: ['scOpenAction'],
                                 pagename: 'builder|cart-start'
@@ -164,6 +164,18 @@ window.utag_data = default_utag_data;
                                 label: 'Thankyou',
                                 pagename: 'builder|thankyou',
                                 is_thanks: true
+                            }
+                        ],
+                        json: '/store/planBuilder/cart/cart.jsp',
+                        form_name: 'builder'
+                    },
+                    addonBuilder: {
+                        form_steps: [
+                            {
+                                url: '/store/builder/addOnsBuilder.jsp',
+                                label: 'Cart Start',
+                                events: ['scOpenAction'],
+                                pagename: 'builder|cart-start'
                             }
                         ],
                         json: '/store/planBuilder/cart/cart.jsp',
@@ -207,7 +219,7 @@ window.utag_data = default_utag_data;
                                 url: '/store/cart/orderLeadForm-contactDetails.jsp',
                                 label: 'Contact Info',
                                 events: ['lead form load'],
-                                pagename: 'leadform|contact-details|step-1'
+                                pagename: 'leadform|contact-info|step-1'
                             },
                             {
                                 url: '/store/cart/orderLeadForm-serviceAddress.jsp',
@@ -299,17 +311,31 @@ window.utag_data = default_utag_data;
                 analytics.settings.tealium_profile = analytics.tealium.get_profile();
                 analytics.settings.is_checkout = false;
                 analytics.settings.is_thanks = false;
-
+                analytics.settings.user_info = {
+                    postal_code: false,
+                    half_postal_code: false,
+                    city: false,
+                    province: false,
+                    address: false,
+                    ip: false,
+                    isp: false
+                };
                 if (analytics.tools.get_location().length >= 13) {
-                    analytics.settings.user_info = {
-                        postal_code: sha256(analytics.settings.user_location[2]),
-                        half_postal_code: analytics.settings.user_location[2].slice(0,3),
-                        city: analytics.settings.user_location[3],
-                        province: analytics.settings.user_location[4],
-                        address: sha256(analytics.settings.user_location[5] + ' ' + analytics.settings.user_location[6]),
-                        ip: sha256(analytics.settings.user_location[10]),
-                        isp: analytics.settings.user_location[13]
-                    };
+                    try {
+                        analytics.settings.user_info = {
+                            postal_code: sha256(analytics.settings.user_location[2]) || false,
+                            half_postal_code: analytics.settings.user_location[2].slice(0,3) || false,
+                            city: analytics.settings.user_location[3] || false,
+                            province: analytics.settings.user_location[4] || false,
+                            address: sha256(analytics.settings.user_location[5] + ' ' + analytics.settings.user_location[6]) || false,
+                            ip: sha256(analytics.settings.user_location[10]) || false,
+                            isp: analytics.settings.user_location[13] || false
+                        };
+                    }
+                    catch(e) {
+                        analytics.log('Analytics: Unable to set location data.');
+                    }
+
                 }
 
                 Object.keys(analytics.settings.pages).forEach(function(k,v){
@@ -521,17 +547,17 @@ window.utag_data = default_utag_data;
                         day_of_month: utag_data.day_of_month || date.getDate(),
                         timestamp: utag_data.timestamp || date.toString(),
                         url: utag_data['dom.url'] || document.location.href,
-                        user_type: utag_data.user_type ||  analytics.tools.get_storage("new_customer_type") ||  'unknown',
+                        user_type: utag_data.user_type ||  analytics.tools.get_user_type() ||  'unknown',
                         page_section: utag_data.page_section || ((analytics.settings.path.length == 1) && (analytics.settings.path[0] == 'store')) ? 'homepage' : analytics.settings.path[0],
                         eoid: utag_data.eoid || analytics.tools.get_url_param('eoId'),
                         taxonomy_level: utag_data.taxonomy_level || analytics.settings.depth.toString(),
                         user_login_state: utag_data.user_login_state || analytics.tools.get_cookie("hasLoggedIn") || 'logged-out',
-                        home_postal_code: utag_data.home_postal_code || analytics.settings.user_info.postal_code,
-                        province: utag_data.province || analytics.settings.user_info.province,
+                        home_postal_code: utag_data.home_postal_code || analytics.settings.user_info.postal_code || false,
+                        province: utag_data.province || analytics.settings.user_info.province || false,
                         platform: utag_data.platform || analytics.tools.device().device,
 
                         //Additional data
-                        visitor_postal_code: analytics.settings.user_info.postal_code,
+                        visitor_postal_code: analytics.settings.user_info.postal_code || false,
                         visitor_half_postal_code: analytics.settings.user_info.half_postal_code,
                         visitor_city: analytics.settings.user_info.city,
                         visitor_province: analytics.settings.user_info.province,
@@ -695,10 +721,9 @@ window.utag_data = default_utag_data;
                 env: function() {
                     var h = document.location.hostname,
                         localenv = localStorage.getItem('tealium-env');
-
                     if (localenv) { return localenv; }
                     else {
-                        return (h.includes('dev') || h.includes('localhost') || h.includes('127.0.0.1')) ? 'dev' : (h.includes('pre') || h.includes('tst')) ? 'qa' : 'prod';
+                        return (h.includes('dev') || h.includes('localhost') || h.includes('127.0.0.1')) ? 'dev' : h.includes('playpen') || h.includes('nonprod') || (h.includes('pre') || h.includes('tst')) ? 'qa' : 'prod';
                     }
 
                 },
@@ -802,6 +827,26 @@ window.utag_data = default_utag_data;
                         }, 100);
                     }
                 },
+                get_user_type: function() {
+                    try {
+                        var user_type = analytics.tools.get_storage('new_customer_type');
+                        if (!user_type && (document.cookie.indexOf('browser_profile=') > -1)) {
+                            var user_cookie = analytics.tools.get_cookie('browser_profile').split("!"), profile = [];
+                            user_cookie.forEach(function(e){
+                                profile.push(e.replace(/^\{|\}$/g,""));
+                            });
+                            var user_type = profile[0] || 'unknown';
+                        }
+                        else {
+                            user_type = 'unknown';
+                        }
+                        analytics.settings.user_type = user_type;
+                        return user_type;
+                    }
+                    catch(e) {
+                        analytics.log('Analytics: Unable to set user type.', e);
+                    }
+                },
                 set_customer_cookie: function(type) {
                     analytics.tools.set_storage("new_customer_type", type);
                     utag_data.user_type = type;
@@ -824,15 +869,22 @@ window.utag_data = default_utag_data;
                 },
                 get_location: function() {
                     try {
-                        var user_cookie = analytics.tools.get_cookie('location').split("!"), location = [];
-                        user_cookie.forEach(function(e){
-                            location.push(e.replace(/^\{|\}$/g,""));
-                        });
-                        analytics.settings.user_location = location;
+                        if (document.cookie.indexOf('location=') > -1) {
+                            var user_cookie = analytics.tools.get_cookie('location').split("!"), location = [];
+                            user_cookie.forEach(function(e){
+                                location.push(e.replace(/^\{|\}$/g,""));
+                            });
+                            analytics.settings.user_location = location || [];
+                        }
+                        else {
+                            analytics.settings.user_location = [];
+                            location = [];
+                        }
                         return location;
                     }
                     catch(e) {
                         analytics.log('Analytics: Unable to determine location using cookies.', e);
+                        return false;
                     }
                 },
                 get_language: function() {
@@ -1018,6 +1070,10 @@ window.utag_data = default_utag_data;
                                     case 'builder':
                                         o.product_id = v.skuId, o.product_quantity = '1', o.product_name = v.name, o.product_type = v.type, o.product_regular_price = v['item.totalDisplayPrice'] !== 'undefined' ? v['item.totalDisplayPrice'] : '0.00', o.product_monthly_charge_less_discount = v.regularPriceLessRecurringDiscount, o.product_recurring_discount = v.recurringDiscount, o.product_sale_price = v.monthlyRecurringRevenue, o.product_offer_discount = v.offerDiscount, o.product_order_type = v.orderType, o.product_rgu = v.rguFlag.toString(), o.product_contract = v.contract, has_themepack = v.hasOwnProperty('tvThemePacksIncluded'), o.themepack = has_themepack ? v.tvThemePacksIncluded : false;
                                     break;
+                                    case 'addonBuilder':
+                                        o.product_id = v.skuId, o.product_quantity = '1', o.product_name = v.name, o.product_type = v.type, o.product_regular_price = v['item.totalDisplayPrice'] !== 'undefined' ? v['item.totalDisplayPrice'] : '0.00', o.product_monthly_charge_less_discount = v.regularPriceLessRecurringDiscount, o.product_recurring_discount = v.recurringDiscount, o.product_sale_price = v.monthlyRecurringRevenue, o.product_offer_discount = v.offerDiscount, o.product_order_type = v.orderType, o.product_rgu = v.rguFlag.toString(), o.product_contract = v.contract, has_themepack = v.hasOwnProperty('tvThemePacksIncluded'), o.themepack = has_themepack ? v.tvThemePacksIncluded : false;
+                                    break;
+
                                     case 'bluesky':
                                         o.product_id = v.productId, o.product_quantity = v.quantity, o.product_name = v.analyticsItem.productName, o.product_type = v.analyticsItem.productType, o.product_regular_price = v.regularPrice, o.product_monthly_charge_less_discount = v.regularPriceLessRecurringDiscount, o.product_recurring_discount = v.recurringDiscount, o.product_sale_price = (o.product_type !== 'hardware') ? v.salePrice : v.price, o.product_offer_discount = v.offerDiscount, o.product_order_type = v.rguType, o.product_rgu = v.rguFlag.toString(), o.product_contract = v.contract, has_themepack = false;
                                         if(v.hasOwnProperty('portal')) { o.product_name = v.portal; o.product_regular_price = v.portalPrice; o.product_sale_price = v.portalSalePrice; o.equipment_purchase_type = v.portalPaymentType || "recurring"; }
@@ -1054,9 +1110,13 @@ window.utag_data = default_utag_data;
                                 analytics.settings.product_string.equipment_purchase_type.push(o.product_name);
                             }
                             //Only new customers get an RGU.
+                            /*
                             if (analytics.tools.get_storage("new_customer_type") !== 'existing') {
                                 analytics.settings.product_string.product_rgu.push(o.product_rgu);
-                            }
+                            }*/
+                            //Everyone gets an RGU on the front end.
+                            analytics.settings.product_string.product_rgu.push(o.product_rgu);
+
                             analytics.settings.product_string.product_contract.push(o.product_contract);
                             (has_themepack) && analytics.cart.add_product(o.themepack, true);
                         });
@@ -1077,7 +1137,7 @@ window.utag_data = default_utag_data;
                         sessionStorage.removeItem('billing_type');
                         return false;
                     }
-                    else if (analytics.settings.is_checkout) {
+                    else if (analytics.settings.is_checkout && !analytics.settings.is_thanks) {
                         analytics.cart.get_json(analytics.settings.product_json_url).done(function(json) {
                             analytics.settings.cart = (analytics.settings.checkout_type == 'bluesky') ? json : (analytics.settings.checkout_type == 'leadform' || analytics.settings.checkout_type == 'student') ? json.lead : json.cart;
                             analytics.log(analytics.settings.cart);
@@ -1093,6 +1153,7 @@ window.utag_data = default_utag_data;
                                     if (item.hasOwnProperty('hardware')) { analytics.cart.add_product(item.hardware); }
                                     if (item.hasOwnProperty('themepacks')) { analytics.cart.add_product(item.themepacks, true); }
                                     if (item.hasOwnProperty('addOns')) { analytics.cart.add_product(item.addOns); }
+
                                     if (item.hasOwnProperty("portal")) { analytics.cart.add_product(item.portal); }
                                 }
                                 if (analytics.settings.checkout_type == 'builder') {
@@ -1108,6 +1169,14 @@ window.utag_data = default_utag_data;
                                         }
                                     });
                                 }
+                                if (analytics.settings.checkout_type == 'addonBuilder') {
+                                    $(Object.keys(o)).each(function(k, v) {
+                                        var item = o[v];
+                                        if (typeof(item) == 'object') {
+                                            if (item.hasOwnProperty('addons')) { analytics.cart.add_product(item.addons); }
+                                        }
+                                    });
+                                }
                                 if (analytics.settings.checkout_type == 'leadform' || analytics.settings.checkout_type == 'student') {
                                     $(Object.keys(o)).each(function(k, v) {
                                             var item = o[v], ext = {
@@ -1120,7 +1189,7 @@ window.utag_data = default_utag_data;
                                             $.extend(item, ext);
 
                                             if (v.includes('Service')) { analytics.cart.add_product(item); }
-                                            if (v == 'programming') { analytics.cart.add_product(item, true); }
+                                            if (v == 'programming' || v == 'addons') { analytics.cart.add_product(item, true); }
                                     });
                                 }
                                 sessionStorage.setItem('products', JSON.stringify(analytics.settings.product_string));
@@ -1172,6 +1241,14 @@ window.utag_data = default_utag_data;
                                         if (item.hasOwnProperty('streamingService')) { analytics.cart.add_product(item.streamingService); }
                                         if (item.hasOwnProperty('addons')) { analytics.cart.add_product(item.addons); }
                                     }
+                                }
+                            });
+                        }
+                        if (analytics.settings.checkout_type == 'addonBuilder') {
+                            $(Object.keys(o)).each(function(k, v) {
+                                var item = o[v];
+                                if (typeof(item) == 'object') {
+                                    if (item.hasOwnProperty('addons')) { analytics.cart.add_product(item.addons); }
                                 }
                             });
                         }
