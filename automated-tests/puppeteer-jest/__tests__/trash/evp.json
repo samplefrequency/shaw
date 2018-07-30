@@ -1,0 +1,23 @@
+{
+    "tests" :
+    [
+        {
+            "url": "https://www.shaw.ca/store/",
+            "isMobile": false,
+            "pageName": "Shaw Homepage",
+            "adobe": {
+                "pageName": "home-page",
+                "events": [
+                    "event1"
+                ],
+                "evars": {
+                    "v1": "home-page",
+                    "v2": "fail"
+                },
+                "props": {
+                    "c1": "home-page"
+                }
+            }
+        }
+    ]
+}

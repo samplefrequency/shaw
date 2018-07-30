@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "jest": "^22.4.0",
+    "puppeteer": "^1.1.0"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testResultsProcessor": "./node_modules/jest-html-reporter"
+  },
+    "jest-html-reporter": {
+        "includeFailureMsg": true
+    },
+
+  "devDependencies": {
+    "jest-html-reporter": "^2.0.0"
+  }
+}

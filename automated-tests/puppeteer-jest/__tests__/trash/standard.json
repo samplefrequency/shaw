@@ -1,0 +1,20 @@
+{
+    "tests" :
+    [
+        {
+            "url": "https://www.shaw.ca/store/",
+            "isMobile": false,
+            "pageName": "Shaw Homepage"
+        },
+        {
+            "url": "https://www.shaw.ca/contact-us/",
+            "isMobile": false,
+            "pageName": "Contact Us"
+        },
+        {
+            "url": "https://www.shaw.ca/internet/plans/",
+            "isMobile": false,
+            "pageName": "Internet Plans"
+        }
+    ]
+}

@@ -1,0 +1,29 @@
+{
+    "tests" :
+    [
+        {
+            "pageName": "Shaw Homepage",
+            "url": "https://www.shaw.ca/store/",
+            "isMobile": false,
+            "emulateMobile": "iPad Pro",
+            "monitorNetwork": true,
+            "checkPageErrors": true,
+            "requiredScripts": [
+                "tealium iq",
+                "adobe",
+                "facebook pageview",
+                "visual iq",
+                "tealium collect",
+                "tracking utils"
+            ]
+        },
+        {
+            "pageName": "Internet Plans",
+            "url": "https://www.shaw.ca/internet/plans/",
+            "isMobile": false,
+            "emulateMobile": "iPad Pro",
+            "monitorNetwork": true,
+            "checkPageErrors": true
+        }
+    ]
+}

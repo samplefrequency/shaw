@@ -1,0 +1,21 @@
+{
+    "tests" :
+    [
+        {
+            "pageName": "Multi Step Lead Form",
+            "url": "https://www.shaw.ca/store/cart/orderLeadForm-contactDetails.jsp?eoId=4300008",
+            "isMobile": false,
+            "emulateMobile": "iPad Pro",
+            "monitorNetwork": true,
+            "checkPageErrors": false,
+            "requiredScripts": [
+                "tealium iq",
+                "adobe",
+                "facebook pageview",
+                "visual iq",
+                "tealium collect",
+                "tracking utils"
+            ]
+        }
+    ]
+}
