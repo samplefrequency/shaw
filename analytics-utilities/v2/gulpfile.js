@@ -7,6 +7,8 @@ const bro = require("gulp-bro");
 const jest = require("gulp-jest").default;
 var pkg = require("./package.json");
 const config = require("./config");
+var browserSync = require('browser-sync').create();
+
 
 const comment =
   "/*\n" +
@@ -20,7 +22,7 @@ const comment =
   "*/\n\n";
 
 gulp.task("jest", function() {
-  return gulp.src(path.resolve(__dirname, "src/js/**/*.test.js")).pipe(
+  return gulp.src(path.resolve(__dirname, "src/js")).pipe(
     jest({
       preprocessorIgnorePatterns: [
         "<rootDir>/dist/",
@@ -50,20 +52,24 @@ gulp.task("js", () => {
     .pipe(gulp.dest(path.resolve(__dirname, config.analytics.dist)));
 });
 
-gulp.task("move-fonts", () => {
-  gulp
-    .src(path.resolve(__dirname, "src/fonts/**/*"))
-    .pipe(gulp.dest(path.resolve(__dirname, "dist/fonts")));
-});
-gulp.task("copy-to-http", () => {
-  gulp
-    .src(path.resolve(__dirname, "dist/js/analytics/index.js"))
-    .pipe(gulp.dest(path.resolve(__dirname, "/Applications/XAMPP/xamppfiles/htdocs/analytics/")));
+gulp.task('browser-sync', function() {
+  browserSync.init({
+      server: {
+          baseDir: './',
+          index: config.analytics.src + "browser/index.html"
+      }
+  });
 });
 
-gulp.task("build", ["move-fonts", "jest", "js", "copy-to-http"]);
+gulp.task('browser-build-watch', ['js'], function (done) {
+  browserSync.reload();
+  done();
+});
+
+gulp.task("build", ["js", "browser-sync", "jest"]);
+
 
 gulp.task("default", ["build"], () => {
-  gulp.watch(path.resolve(__dirname, "src/js/**/*.js"), ["jest", "js", "copy-to-http"]);
+  gulp.watch(path.resolve(__dirname, "src/js/**/**.js"), ["js", "browser-build-watch", "jest"]);
+  gulp.watch(path.resolve(__dirname, "src/js/**/**/*.html"), ["browser-build-watch", "jest"]);
 });
-
