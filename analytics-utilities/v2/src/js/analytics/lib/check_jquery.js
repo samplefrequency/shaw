@@ -1,2 +1,0 @@
-if (typeof($) !== 'undefined' && typeof(jQuery) == 'undefined') { var jQuery = $; }
-if (typeof(jQuery) == 'undefined') { throw new Error('Analytics Script & Tealium required jQuery.' + "\n" + jQuery + "\n" + $); }
