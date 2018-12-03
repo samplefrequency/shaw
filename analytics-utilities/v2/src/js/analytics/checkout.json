@@ -1,0 +1,204 @@
+{
+    "builder":{
+       "form_steps":[
+          {
+             "url":"/store/builder/builder.jsp",
+             "label":"Cart Start",
+             "events":[
+                "scOpenAction"
+             ],
+             "pagename":"builder|cart-start"
+          },
+          {
+             "url":"/store/checkout/step1.jsp",
+             "label":"Contact Info",
+             "events":[
+                "lead form load"
+             ],
+             "pagename":"builder|contact-info|step-1"
+          },
+          {
+             "url":"/store/checkout/step2.jsp",
+             "label":"Installation",
+             "events":[
+                "lead form load"
+             ],
+             "pagename":"builder|installation|step-2"
+          },
+          {
+             "url":"/store/checkout/step3.jsp",
+             "label":"Review Submit",
+             "events":[
+                "lead form load"
+             ],
+             "pagename":"builder|review-submit|step-3"
+          },
+          {
+             "url":"/store/checkout/thankYou.jsp",
+             "label":"Thankyou",
+             "pagename":"builder|thankyou",
+             "is_thanks":true
+          }
+       ],
+       "json":"/store/planBuilder/cart/cart.jsp",
+       "form_name":"builder"
+    },
+    "addonBuilder":{
+       "form_steps":[
+          {
+             "url":"/store/builder/addOnsBuilder.jsp",
+             "label":"Cart Start",
+             "events":[
+                "scOpenAction"
+             ],
+             "pagename":"builder|cart-start"
+          }
+       ],
+       "json":"/store/planBuilder/cart/cart.jsp",
+       "form_name":"builder"
+    },
+    "bluesky":{
+       "form_steps":[
+          {
+             "url":"/store/blueskytv/configurator.jsp",
+             "label":"Cart Start",
+             "events":[
+                "scOpenAction"
+             ],
+             "pagename":"bluesky|cart-start",
+             "wait":3000
+          },
+          {
+             "url":"/store/cart/orderLeadForm3.jsp",
+             "label":"Contact Info",
+             "events":[
+                "lead form load"
+             ],
+             "pagename":"bluesky|contact-info"
+          },
+          {
+             "url":"/store/cart/orderLeadFormThankyou2.jsp",
+             "label":"Thankyou",
+             "pagename":"bluesky|thankyou",
+             "is_thanks":true
+          }
+       ],
+       "lead_form_name":"lead-form|bluesky",
+       "json":"/store/xhr/data/blueskytv/getOrderSummaryJSON.jsp",
+       "form_name":"bluesky"
+    },
+    "leadform":{
+       "form_steps":[
+          {
+             "url":"/store/cart/orderLeadForm2.jsp",
+             "label":"Contact Info",
+             "events":[
+                "scOpenAction"
+             ],
+             "pagename":"leadform|contact-info"
+          },
+          {
+             "url":"/store/cart/orderLeadForm-contactDetails.jsp",
+             "label":"Contact Info",
+             "events":[
+                "lead form load"
+             ],
+             "pagename":"leadform|contact-info|step-1"
+          },
+          {
+             "url":"/store/cart/orderLeadForm-serviceAddress.jsp",
+             "label":"Service Address",
+             "events":[
+                "lead form load"
+             ],
+             "pagename":"leadform|service-address|step-2"
+          },
+          {
+             "url":"/store/cart/orderLeadForm-billingInfo.jsp",
+             "label":"Billing Info",
+             "events":[
+                "lead form load"
+             ],
+             "pagename":"leadform|billing-info|step-3"
+          },
+          {
+             "url":"/store/cart/orderLeadForm-reviewSubmit.jsp",
+             "label":"Review Submit",
+             "events":[
+                "lead form load"
+             ],
+             "pagename":"leadform|review-submit|step-4"
+          },
+          {
+             "url":"/store/cart/orderLeadForm-valuePlan.jsp",
+             "label":"Value Plan",
+             "events":[
+                "lead form load"
+             ],
+             "pagename":"leadform|value-plan|step-5"
+          },
+          {
+             "url":[
+                "/store/cart/orderLeadFormThankyou.jsp",
+                "/store/cart/orderLeadForm-thankYou.jsp"
+             ],
+             "label":"Thankyou",
+             "pagename":"leadform|thankyou",
+             "is_thanks":true
+          }
+       ],
+       "lead_form_name":"lead-form|{{eoId}}|{{promoId}}",
+       "form_name":"lead form",
+       "json":"/store/cart/leadTrackingJson.jsp?eoId={{eoId}}&promoId={{promoId}}"
+    },
+    "student":{
+       "form_steps":[
+          {
+             "url":"/store/campaign/student-p1.jsp",
+             "label":"Cart Start",
+             "events":[
+                "scOpenAction"
+             ],
+             "pagename":"student-leadform|cart-start"
+          },
+          {
+             "url":"/store/campaign/student-p2.jsp",
+             "label":"Contact Info",
+             "events":[
+                "scOpenAction"
+             ],
+             "pagename":"student-leadform|contact-info"
+          },
+          {
+             "url":"/store/campaign/student-thankyou.jsp",
+             "label":"Thankyou",
+             "pagename":"student-leadform|thankyou",
+             "is_thanks":true
+          }
+       ],
+       "lead_form_name":"lead-form|student|{{body-eoId}}",
+       "form_name":"student",
+       "json":"/store/cart/leadTrackingJson.jsp?eoId={{body-eoId}}&promoid={{promoId}}"
+    },
+    "ised":{
+       "form_steps":[
+          {
+             "url":"/store/connecting-families/index.jsp",
+             "label":"Cart Start",
+             "events":[
+                "scOpenAction"
+             ],
+             "pagename":"ised-leadform|cart-start"
+          },
+          {
+             "url":"/store/connecting-families/thank-you.jsp",
+             "label":"Thankyou",
+             "pagename":"ised-leadform|thankyou",
+             "is_thanks":true
+          }
+       ],
+       "lead_form_name":"lead-form|ised|{{body-eoId}}",
+       "form_name":"ised",
+       "json":"/store/cart/leadTrackingJson.jsp?eoId={{body-eoId}}&promoId={{promoId}}"
+    }
+ }
